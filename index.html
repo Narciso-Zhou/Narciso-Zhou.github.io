@@ -1,1854 +1,627 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>闪光曝光助手</title>
-    
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="闪光助手">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#0a0a0a">
-    <meta name="description" content="专业闪光灯曝光计算器，支持HSS高速同步、压暗背景、填充闪光、ND镜计算">
-    
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIuaLteWFieabtOWFieWKqeaJiyIsCiAgInNob3J0X25hbWUiOiAi5peB5YWJ5Yqp5omLIiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBhMGEiLAogICJ0aGVtZV9jb2xvciI6ICIjMGEwYTBhIiwKICAiZGVzY3JpcHRpb24iOiAi5LiT5Lia5peB5YWJ55m75YWJ6K6h566X5Zmo77yM5pSv5oyBSFNT6auY6YCf5ZCM5q2l44CB5Y6L5pqX6IOM5pmv44CB5aGr5YWF5peB5YWJ44CBTkTplZzorqHnrpfjgIIiLAogICJsYW5nIjogInpoLUNOIiwKICAiaWNvbnMiOiBbeyJzcmMiOiJkYXRhOmltYWdlL3N2Zyt4bWwsJTNDc3ZnIHhtbG5zPSdodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2Zycgdmlld0JveD0nMCAwIDEwMCAxMDAnJTNFJTNDcmVjdCB3aWR0aD0nMTAwJyBoZWlnaHQ9JzEwMCcgcng9JzIwJyBmaWxsPSclMjMwYTBhMGEnLyUzRSUzQ3RleHQgeD0nNTAnIHk9JzY4JyBmb250LXNpemU9JzYwJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBmaWxsPSclMjNmZmI4MDAnJWUyJTlGJWI0JWI4PC90ZXh0JTNFJTNDL3N2ZyUzRSIsInNpemVzIjoiMTkyeDE5MiIsInR5cGUiOiJpbWFnZS9zdmcreG1sIiwicHVycG9zZSI6ImFueSBtYXNrYWJsZSJ9LHsic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLCUzQ3N2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCAxMDAgMTAwJyUzRSUzQ3JlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nJTIzMGEwYTBhJy8lM0UlM0N0ZXh0IHg9JzUwJyB5PSc2OCcgZm9udC1zaXplPSc2MCcgdGV4dC1hbmNob3I9J21pZGRsZScgZmlsbD0nJTIzZmZiODAwJyVFMiU5RiVCNCVCODwvdGV4dCUzRSUzQy9zdmclM0UiLCJzaXplcyI6IjUxMng1MTIiLCJ0eXBlIjoiaW1hZ2Uvc3ZnK3htbCIsInB1cnBvc2UiOiJhbnkgbWFza2FibGUifV19">
-    
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%230a0a0a'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='%23ffb800'%3E⚡%3C/text%3E%3C/svg%3E">
-
-    <style>
-        .pwa-install-banner {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1a1a1a;
-            border-top: 2px solid #ffb800;
-            padding: 14px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 9999;
-            box-shadow: 0 -8px 24px rgba(0,0,0,0.6);
-            animation: slideUp 0.4s ease-out;
-        }
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-        .pwa-install-banner.hidden {
-            display: none;
-        }
-        .pwa-banner-text {
-            font-size: 14px;
-            color: #fff;
-            font-weight: 600;
-        }
-        .pwa-banner-text small {
-            display: block;
-            font-size: 11px;
-            color: #888;
-            font-weight: 400;
-            margin-top: 2px;
-        }
-        .pwa-banner-btn {
-            background: #ffb800;
-            color: #000;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 10px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            white-space: nowrap;
-            margin-left: 12px;
-        }
-        .pwa-banner-close {
-            background: transparent;
-            border: none;
-            color: #666;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 4px 8px;
-            margin-left: 4px;
-        }
-
-        :root {
-            --bg: #0a0a0a;
-            --card: #111;
-            --border: #2a2a2a;
-            --accent: #ffb800;
-            --text: #e0e0e0;
-            --muted: #888;
-            --warning: #ff5252;
-            --success: #4caf50;
-            --info: #4a90d9;
-            --fill: #ff9800;
-            --safe-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: var(--bg);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            padding: 20px 12px calc(20px + var(--safe-bottom));
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            color: var(--text);
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .container {
-            max-width: 1200px;
-            width: 100%;
-            background: #1a1a1a;
-            border-radius: 24px;
-            padding: 24px 20px 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
-        }
-
-        h1 {
-            font-size: 24px;
-            font-weight: 700;
-            text-align: center;
-            color: #fff;
-            margin-bottom: 4px;
-        }
-        .subtitle {
-            text-align: center;
-            color: var(--muted);
-            font-size: 13px;
-            margin-bottom: 24px;
-        }
-
-        .mode-tabs {
-            display: flex;
-            gap: 6px;
-            background: #0a0a0a;
-            padding: 5px;
-            border-radius: 14px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-        }
-        .mode-tabs button {
-            flex: 1;
-            min-width: 70px;
-            padding: 11px 8px;
-            border: none;
-            border-radius: 10px;
-            background: transparent;
-            color: #999;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
-            white-space: nowrap;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .mode-tabs button.active {
-            background: var(--accent);
-            color: #000;
-            box-shadow: 0 4px 12px rgba(255,184,0,0.3);
-        }
-
-        .sub-tabs {
-            display: flex;
-            gap: 6px;
-            background: #0e0e0e;
-            padding: 4px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        .sub-tabs button {
-            flex: 1;
-            padding: 9px 12px;
-            border: none;
-            border-radius: 8px;
-            background: transparent;
-            color: #666;
-            font-weight: 500;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .sub-tabs button.active {
-            background: #222;
-            color: var(--accent);
-            font-weight: 600;
-        }
-        .hidden {
-            display: none !important;
-        }
-
-        .desktop-layout {
-            display: flex;
-            gap: 20px;
-        }
-        .input-panel {
-            flex: 1;
-            min-width: 0;
-        }
-        .result-panel {
-            flex: 1;
-            min-width: 0;
-        }
-        @media (max-width: 768px) {
-            .desktop-layout {
-                flex-direction: column;
-            }
-            body {
-                padding: 12px 8px calc(12px + var(--safe-bottom));
-            }
-            .container {
-                padding: 20px 14px 24px;
-                border-radius: 20px;
-            }
-            h1 {
-                font-size: 20px;
-            }
-            .mode-tabs button {
-                font-size: 10px;
-                padding: 10px 5px;
-            }
-            .sub-tabs button {
-                font-size: 11px;
-                padding: 8px 10px;
-            }
-        }
-
-        .param-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 12px;
-            border: 1px solid var(--border);
-        }
-        .param-card.warning-border {
-            border-color: var(--warning);
-        }
-        .param-card.accent-border {
-            border-color: var(--accent);
-        }
-        .param-card.fill-border {
-            border-color: var(--fill);
-        }
-        .param-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .param-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .param-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--accent);
-        }
-
-        .gn-input-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-        .gn-input-row input {
-            flex: 1;
-            background: #1e1e1e;
-            border: 2px solid #333;
-            border-radius: 10px;
-            padding: 10px 14px;
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
-            width: 80px;
-            text-align: center;
-            transition: 0.2s;
-        }
-        .gn-input-row input:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-        .gn-unit {
-            color: var(--muted);
-            font-size: 12px;
-        }
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 34px;
-            background: transparent;
-            margin: 0;
-            cursor: pointer;
-        }
-        input[type="range"]::-webkit-slider-runnable-track {
-            height: 5px;
-            background: #2a2a2a;
-            border-radius: 3px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 30px;
-            height: 30px;
-            background: var(--accent);
-            border-radius: 50%;
-            margin-top: -12px;
-            box-shadow: 0 3px 10px rgba(255,184,0,0.4);
-            border: 3px solid #1a1a1a;
-        }
-        .range-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-            font-size: 10px;
-        }
-        .range-min, .range-max {
-            color: #444;
-        }
-        .range-current {
-            background: #1e1e1e;
-            color: var(--accent);
-            padding: 3px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 10px;
-            border: 1px solid #333;
-        }
-
-        .btn-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-            margin: 8px 0;
-        }
-        .btn-grid button {
-            padding: 9px 4px;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 8px;
-            color: #ccc;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .btn-grid button:hover {
-            border-color: #555;
-        }
-        .btn-grid button.active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            font-weight: 700;
-        }
-
-        .tune-row {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-        }
-        .tune-row button {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #444;
-            border-radius: 8px;
-            background: #1a1a1a;
-            color: #aaa;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .tune-row button.active-tune {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            font-weight: 700;
-        }
-
-        .toggle-btn-group button {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            background: #1a1a1a;
-            color: #ccc;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .toggle-btn-group button.active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            font-weight: 700;
-        }
-
-        .divider-label {
-            border-top: 1px solid #333;
-            margin: 12px 0 8px;
-            text-align: center;
-            font-size: 10px;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .calc-btn {
-            width: 100%;
-            margin-top: 16px;
-            padding: 15px;
-            background: var(--accent);
-            color: #000;
-            font-weight: 700;
-            font-size: 16px;
-            border: none;
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s;
-            letter-spacing: 1px;
-        }
-        .calc-btn:hover {
-            background: #ffc933;
-            transform: translateY(-1px);
-        }
-        .calc-btn:active {
-            background: #e5a600;
-            transform: translateY(0);
-        }
-
-        .wizard-steps {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0;
-            margin-bottom: 20px;
-            padding: 0 10px;
-        }
-        .wizard-step {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 11px;
-            color: #555;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .wizard-step .step-number {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: #1e1e1e;
-            border: 2px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 12px;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-        .wizard-step.active .step-number {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-        }
-        .wizard-step.done .step-number {
-            background: var(--success);
-            color: #000;
-            border-color: var(--success);
-        }
-        .wizard-step.active {
-            color: #fff;
-        }
-        .wizard-step.done {
-            color: var(--success);
-        }
-        .wizard-line {
-            width: 24px;
-            height: 2px;
-            background: #333;
-            margin: 0 6px;
-            transition: all 0.3s;
-            flex-shrink: 0;
-        }
-        .wizard-line.done {
-            background: var(--success);
-        }
-
-        .fill-effect-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .fill-effect-btn {
-            padding: 12px 8px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 12px;
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .fill-effect-btn.active {
-            background: var(--fill);
-            color: #000;
-            border-color: var(--fill);
-            font-weight: 700;
-        }
-        .fill-effect-btn .effect-desc {
-            font-size: 10px;
-            color: #888;
-            display: block;
-            margin-top: 4px;
-            font-weight: 400;
-        }
-        .fill-effect-btn.active .effect-desc {
-            color: #333;
-        }
-
-        .darken-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 8px;
-        }
-        .darken-btn {
-            padding: 14px 8px;
-            background: #1a1a1a;
-            border: 2px solid #333;
-            border-radius: 12px;
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
-        .darken-btn.active {
-            background: var(--accent);
-            color: #000;
-            border-color: var(--accent);
-            font-weight: 700;
-        }
-        .darken-btn .darken-desc {
-            font-size: 10px;
-            color: #888;
-            display: block;
-            margin-top: 4px;
-            font-weight: 400;
-        }
-        .darken-btn.active .darken-desc {
-            color: #333;
-        }
-
-        .result-area {
-            background: #1e1e1e;
-            border-radius: 20px;
-            padding: 20px;
-            border: 1px solid var(--border);
-            position: sticky;
-            top: 16px;
-        }
-        .result-area h3 {
-            font-size: 16px;
-            color: var(--accent);
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .result-placeholder {
-            color: #444;
-            text-align: center;
-            padding: 50px 0;
-            font-size: 14px;
-            line-height: 1.8;
-        }
-        .result-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #2a2a2a;
-            font-size: 13px;
-        }
-        .result-row:last-child {
-            border-bottom: none;
-        }
-        .result-row .val {
-            font-weight: 700;
-            color: #fff;
-            font-size: 15px;
-        }
-        .result-row .val.big {
-            font-size: 28px;
-            color: var(--accent);
-        }
-        .result-row .val.warning {
-            color: var(--warning);
-        }
-        .result-row .val.success {
-            color: var(--success);
-        }
-        .result-row .val.fill {
-            color: var(--fill);
-        }
-        .result-section {
-            margin-top: 16px;
-            padding: 12px;
-            background: #111;
-            border-radius: 10px;
-            border-left: 3px solid var(--accent);
-        }
-        .result-section.fill-section {
-            border-left-color: var(--fill);
-        }
-        .result-section h4 {
-            font-size: 13px;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        .result-section.fill-section h4 {
-            color: var(--fill);
-        }
-        .suggestion-box {
-            margin-top: 12px;
-            padding: 12px;
-            background: #111;
-            border-radius: 10px;
-            font-size: 12px;
-            color: #999;
-            line-height: 1.7;
-            border-left: 3px solid var(--accent);
-        }
-        .suggestion-box strong {
-            color: var(--accent);
-        }
-        .exposure-table {
-            width: 100%;
-            margin-top: 12px;
-            border-collapse: collapse;
-            font-size: 11px;
-        }
-        .exposure-table th {
-            background: #111;
-            padding: 8px 6px;
-            color: var(--muted);
-            font-weight: 600;
-            text-align: center;
-            border-bottom: 2px solid #333;
-        }
-        .exposure-table td {
-            padding: 7px 6px;
-            text-align: center;
-            border-bottom: 1px solid #1a1a1a;
-            color: #ccc;
-        }
-        .exposure-table tr:hover td {
-            background: #1a1a1a;
-        }
-        .exposure-table .best-match {
-            background: #2a2a10;
-            color: var(--accent);
-            font-weight: 700;
-        }
-        .preset-grid {
-            display: flex;
-            gap: 4px;
-            flex-wrap: wrap;
-            margin-top: 6px;
-        }
-        .preset-grid button {
-            flex: 1;
-            min-width: 36px;
-            padding: 5px;
-            font-size: 10px;
-            border: 1px solid #333;
-            border-radius: 6px;
-            background: #1a1a1a;
-            color: #888;
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .preset-grid button:hover {
-            border-color: #555;
-            color: #ccc;
-        }
-
-        .inline-row {
-            display: flex;
-            gap: 8px;
-            align-items: flex-end;
-        }
-        .inline-row > div {
-            flex: 1;
-        }
-        .mini-label {
-            font-size: 10px;
-            color: #666;
-            margin-bottom: 4px;
-        }
-        .mini-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-        }
-        .mini-tag {
-            font-size: 9px;
-            color: #444;
-            text-align: center;
-        }
-        .ev-badge {
-            display: inline-block;
-            background: #1e1e1e;
-            color: var(--accent);
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 12px;
-            border: 1px solid #333;
-        }
-
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        input[type="number"] {
-            -moz-appearance: textfield;
-        }
-    </style>
+<html lang="zh-CN" data-page-node-id="4uFnHh59XwdGTbCA0CoWjl">
+<head data-page-node-id="YieycLZk7lB456wS4LvPDp">
+<meta charset="UTF-8" data-page-node-id="dUTY1dnhqjINbsjXDpvPtM">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" data-page-node-id="ijUrCsubBU6etdbU6F2gNa">
+<title>曝光换算器 · 闪光灯助手</title>
+<script src="https://cdn.jsdelivr.net/npm/exifr@7.1.3/dist/full.umd.min.js"></script>
+<style>
+  :root {
+    --bg: #0e1116;
+    --card: #171c24;
+    --card2: #1e2530;
+    --line: #2a3240;
+    --text: #e8ecf2;
+    --dim: #8b96a5;
+    --accent: #ffb454;
+    --accent2: #4fc3f7;
+    --ok: #6fdc8c;
+    --err: #ff6b6b;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    line-height: 1.6;
+    padding: 16px;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  h1 { font-size: 1.4rem; margin-bottom: 4px; }
+  h1 .cam { color: var(--accent); }
+  .sub { color: var(--dim); font-size: .85rem; margin-bottom: 20px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .card h2 {
+    font-size: 1rem;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: var(--accent); color: #1a1200;
+    font-size: .8rem; font-weight: 700; flex-shrink: 0;
+  }
+  .step.b { background: var(--accent2); color: #00131f; }
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+  button, .file-btn {
+    flex: 1; min-width: 130px;
+    background: var(--card2);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: .95rem;
+    cursor: pointer;
+    text-align: center;
+    transition: border-color .15s, background .15s;
+  }
+  button:hover, .file-btn:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #1a1200; font-weight: 700; }
+  button.primary:hover { filter: brightness(1.08); }
+  button:active { transform: scale(.98); }
+  input[type=file] { display: none; }
+  #thumb {
+    width: 100%; max-height: 240px; object-fit: contain;
+    border-radius: 10px; margin-top: 12px; display: none;
+    background: #000;
+  }
+  .exif-meta { color: var(--dim); font-size: .78rem; margin-top: 8px; display: none; }
+  .grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 12px; }
+  .field label { display: block; font-size: .78rem; color: var(--dim); margin-bottom: 4px; }
+  .field input {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px;
+    font-size: 1rem;
+  }
+  .field input:focus { outline: none; border-color: var(--accent); }
+  .field input[readonly] { background: #131820; border-style: dashed; color: var(--ok); font-weight: 700; }
+  .radios { display: flex; gap: 8px; margin: 12px 0; }
+  .radios label {
+    flex: 1; text-align: center; padding: 8px 4px;
+    border: 1px solid var(--line); border-radius: 8px;
+    font-size: .85rem; cursor: pointer; color: var(--dim);
+  }
+  .radios input { display: none; }
+  .radios input:checked + span { color: inherit; }
+  .radios label:has(input:checked) { border-color: var(--accent2); background: rgba(79,195,247,.12); color: var(--accent2); }
+  #msg { font-size: .85rem; margin-top: 10px; min-height: 1.2em; }
+  #msg.err { color: var(--err); }
+  #msg.ok { color: var(--ok); }
+  #result { display: none; margin-top: 14px; background: var(--card2); border-radius: 10px; padding: 14px; }
+  #result .big { font-size: 1.5rem; font-weight: 800; color: var(--ok); }
+  #result .row { display: flex; justify-content: space-between; font-size: .85rem; color: var(--dim); margin-top: 6px; }
+  #result .row b { color: var(--text); font-weight: 600; }
+  .ev-row { display: flex; justify-content: space-between; font-size: .8rem; color: var(--dim); margin-top: 10px; border-top: 1px dashed var(--line); padding-top: 8px; }
+  .hint { font-size: .78rem; color: var(--dim); margin-top: 10px; }
+  footer { color: var(--dim); font-size: .72rem; text-align: center; margin: 20px 0 30px; }
+  select {
+    width: 100%;
+    background: var(--card2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 10px;
+    font-size: .95rem;
+  }
+  select:focus { outline: none; border-color: var(--accent); }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 6px 0 8px; }
+  .chips button { flex: 0 0 auto; min-width: 0; padding: 6px 12px; font-size: .8rem; border-radius: 999px; }
+  .radios label.disabled { opacity: .35; pointer-events: none; }
+  #fmsg { font-size: .85rem; margin-top: 10px; min-height: 1.2em; }
+  #fmsg.err { color: var(--err); }
+  #fmsg.ok { color: var(--ok); }
+  #fresult { display: none; margin-top: 14px; background: var(--card2); border-radius: 10px; padding: 14px; }
+  #fresult .big { font-size: 1.5rem; font-weight: 800; color: var(--ok); }
+  #fresult .row { display: flex; justify-content: space-between; font-size: .85rem; color: var(--dim); margin-top: 6px; gap: 12px; }
+  #fresult .row b { color: var(--text); font-weight: 600; text-align: right; }
+  .sec-label { font-size: .78rem; color: var(--dim); margin: 14px 0 2px; }
+</style>
 </head>
-<body>
-<div class="container">
-    <h1>📸 闪光曝光助手</h1>
-    <div class="subtitle">三步向导 · 填充闪光 · 压暗背景 · HSS · ND镜</div>
+<body data-page-node-id="ROU88td2juQECOljhBtVQ0">
 
-    <div class="mode-tabs">
-        <button id="modeExpBtn" class="active" onclick="setMode('exposure')">📐 标准曝光</button>
-        <button id="modeFillBtn" onclick="setMode('fill')">☀️ 填充闪光</button>
-        <button id="modeDarkBtn" onclick="setMode('darkBg')">🌑 压暗背景</button>
-        <button id="modeNDBtn" onclick="setMode('nd')">🔘 ND镜</button>
+<!-- 第一步：拍照 / 选照片 -->
+<div class="card" data-page-node-id="dmI8H8x9mAjA4jLVG5FBH2">
+  <h2 data-page-node-id="uqGKbnGw3kQeIjW1l7BqpK"><span class="step" data-page-node-id="00Y3TtE7Z2CEQRVpfT7yfv">1</span>拍摄照片，读取曝光数据</h2>
+  <div class="btn-row" data-page-node-id="guUMKLeP26nfppCAYvZ7GA">
+    <label class="file-btn" data-page-node-id="PYi908RMVcgXA3q9dzEN7C">拍照读取
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" data-page-node-id="ffxAL36mAnjVu9Zhewtsti">
+    </label>
+    <label class="file-btn" data-page-node-id="2gm6lSPF4QpslZNVhyizTE">从相册选择
+      <input type="file" id="galleryInput" accept="image/*" data-page-node-id="LQK7keWcARSZnOuaSEIpKq">
+    </label>
+  </div>
+  <img id="thumb" alt="照片预览" data-page-node-id="UhcwWWaDHrWMVUBqpyHDlH">
+  <p class="exif-meta" id="exifMeta" data-page-node-id="KpUFvsOQxfqMr62Gb40ItH"></p>
+
+  <div class="grid3" data-page-node-id="FKKdnqLAWlWRhVGHfJAsB0">
+    <div class="field" data-page-node-id="PG9MISm2Ls9Ilk0AH03hVk">
+      <label data-page-node-id="VMiuPvmHowFl5gOUXHsXSB">光圈 f/</label>
+      <input id="a1" inputmode="decimal" placeholder="如 1.8" list="apList" data-page-node-id="dWpNdhPMjdl4XDNmmCUY5z">
     </div>
-
-    <div class="sub-tabs" id="subTabs">
-        <button id="subApertureBtn" class="active" onclick="setSubMode('aperture')">🎯 求光圈</button>
-        <button id="subPowerBtn" onclick="setSubMode('power')">⚡ 求功率</button>
-        <button id="subDistanceBtn" onclick="setSubMode('distance')">📏 求距离</button>
+    <div class="field" data-page-node-id="JW6i4bEHU2v2gU3p5LlLPN">
+      <label data-page-node-id="9d0nP2d95ZBNgpDlUXEsEM">快门（秒）</label>
+      <input id="t1" inputmode="decimal" placeholder="如 1/125" list="shList" data-page-node-id="mlXlMePPy7I0JXwajxMgpr">
     </div>
-
-    <div class="wizard-steps hidden" id="fillWizard">
-        <div class="wizard-step active" id="fillStep1"><span class="step-number">1</span>环境光测光</div>
-        <div class="wizard-line" id="fillLine1"></div>
-        <div class="wizard-step" id="fillStep2"><span class="step-number">2</span>填充效果</div>
-        <div class="wizard-line" id="fillLine2"></div>
-        <div class="wizard-step" id="fillStep3"><span class="step-number">3</span>闪光灯设置</div>
+    <div class="field" data-page-node-id="CfAcjJUNRdsgc35feFS96D">
+      <label data-page-node-id="40MVCXLutWQDFpvkwhBdEM">感光度 ISO</label>
+      <input id="s1" inputmode="numeric" placeholder="如 100" list="isoList" data-page-node-id="qgxGlDylzCFcOAlyKx719W">
     </div>
-
-    <div class="wizard-steps hidden" id="darkBgWizard">
-        <div class="wizard-step active" id="darkStep1"><span class="step-number">1</span>环境光测光</div>
-        <div class="wizard-line" id="darkLine1"></div>
-        <div class="wizard-step" id="darkStep2"><span class="step-number">2</span>压暗程度</div>
-        <div class="wizard-line" id="darkLine2"></div>
-        <div class="wizard-step" id="darkStep3"><span class="step-number">3</span>闪光灯设置</div>
-    </div>
-
-    <div class="desktop-layout">
-        <div class="input-panel">
-            <div class="param-card" id="gnCard">
-                <div class="param-header">
-                    <span class="param-label">⚡ 闪光指数 GN (ISO100·米)</span>
-                </div>
-                <div class="gn-input-row">
-                    <input type="number" id="gnInput" value="36" min="1" max="200" step="1"
-                           oninput="onGNInput()" onchange="onGNChange()" onblur="onGNBlur()"
-                           onkeydown="return event.key !== '.' && event.key !== 'e' && event.key !== '-' && event.key !== '+'">
-                    <span class="gn-unit">GN</span>
-                </div>
-                <div class="preset-grid">
-                    <button onclick="setGNPreset(12)">12</button>
-                    <button onclick="setGNPreset(24)">24</button>
-                    <button onclick="setGNPreset(36)">36</button>
-                    <button onclick="setGNPreset(45)">45</button>
-                    <button onclick="setGNPreset(60)">60</button>
-                    <button onclick="setGNPreset(80)">80</button>
-                </div>
-            </div>
-
-            <div class="param-card" id="hssCard">
-                <div class="param-header">
-                    <span class="param-label">⚡ 高速同步 HSS</span>
-                    <span class="param-value" id="hssDisplay" style="font-size:16px;">关闭</span>
-                </div>
-                <div class="toggle-btn-group" style="display:flex;gap:6px;">
-                    <button id="hssOffBtn" class="active" onclick="setHSS(false)">关闭 (≤1/200s)</button>
-                    <button id="hssOnBtn" onclick="setHSS(true)">开启 (≤1/8000s)</button>
-                </div>
-            </div>
-
-            <div class="param-card" id="isoCard">
-                <div class="param-header">
-                    <span class="param-label">ISO 感光度（所有模式共用）</span>
-                    <span class="param-value" id="isoDisplay">100</span>
-                </div>
-                <input type="range" id="isoSlider" min="0" max="16" value="3" step="1" oninput="onISOChange()">
-                <div class="range-info">
-                    <span class="range-min" id="isoMin">50</span>
-                    <span class="range-current" id="isoTag">100</span>
-                    <span class="range-max" id="isoMax">6400</span>
-                </div>
-            </div>
-
-            <div class="param-card hidden" id="ndSelectCard">
-                <div class="param-header">
-                    <span class="param-label">🔘 ND 减光镜档位</span>
-                    <span class="param-value" id="ndDisplay">3档</span>
-                </div>
-                <div class="toggle-btn-group" style="display:flex;gap:6px;">
-                    <button id="nd3Btn" class="active" onclick="setND(3)">ND8<br><small>3档</small></button>
-                    <button id="nd6Btn" onclick="setND(6)">ND64<br><small>6档</small></button>
-                    <button id="nd10Btn" onclick="setND(10)">ND1000<br><small>10档</small></button>
-                </div>
-            </div>
-
-            <div class="param-card fill-border hidden" id="fillAmbientCard">
-                <div class="param-header">
-                    <span class="param-label" style="color:var(--fill);">☀️ 步骤1：环境光正确曝光</span>
-                </div>
-                <div style="font-size:11px;color:#777;margin-bottom:12px;">
-                    对场景中不需要闪光的部分测光
-                </div>
-                <div class="inline-row">
-                    <div>
-                        <div class="mini-label">光圈</div>
-                        <div class="mini-value" id="fillAmbientApertureDisplay">f/5.6</div>
-                        <input type="range" id="fillAmbientApertureSlider" min="0" max="26" value="15" step="1" oninput="onFillAmbientApertureChange()">
-                        <div class="mini-tag" id="fillAmbientApertureTag">f/5.6</div>
-                    </div>
-                    <div>
-                        <div class="mini-label">快门</div>
-                        <div class="mini-value" id="fillAmbientShutterDisplay">1/125</div>
-                        <input type="range" id="fillAmbientShutterSlider" min="0" max="28" value="6" step="1" oninput="onFillAmbientShutterChange()">
-                        <div class="mini-tag" id="fillAmbientShutterTag">1/125</div>
-                    </div>
-                </div>
-                <div style="margin-top:8px;text-align:center;">
-                    <span class="ev-badge" id="fillAmbientEVBadge">环境光 EV: 14.0</span>
-                </div>
-            </div>
-
-            <div class="param-card fill-border hidden" id="fillEffectCard">
-                <div class="param-header">
-                    <span class="param-label" style="color:var(--fill);">🎨 步骤2：选择填充效果</span>
-                </div>
-                <div class="fill-effect-grid">
-                    <button class="fill-effect-btn" id="fillSubtleBtn" onclick="setFillEffect('subtle')">
-                        🌥️ 柔和补光<span class="effect-desc">环境光为主，闪光微弱</span>
-                    </button>
-                    <button class="fill-effect-btn active" id="fillBalancedBtn" onclick="setFillEffect('balanced')">
-                        ⚖️ 均衡填充<span class="effect-desc">闪光与环境光等量</span>
-                    </button>
-                    <button class="fill-effect-btn" id="fillDominantBtn" onclick="setFillEffect('dominant')">
-                        💡 突出主体<span class="effect-desc">闪光为主，环境光为辅</span>
-                    </button>
-                    <button class="fill-effect-btn" id="fillStrongBtn" onclick="setFillEffect('strong')">
-                        🔆 强闪光<span class="effect-desc">闪光主导，环境光很弱</span>
-                    </button>
-                </div>
-                <div style="margin-top:10px;font-size:11px;color:#888;" id="fillEffectPreview">
-                    闪光需比环境光亮 0 EV（1:1 比例）
-                </div>
-            </div>
-
-            <div class="param-card fill-border hidden" id="fillFlashCard">
-                <div class="param-header">
-                    <span class="param-label" style="color:var(--fill);">⚡ 步骤3：闪光灯设置</span>
-                </div>
-                <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;">闪光灯至主体距离</div>
-                <input type="range" id="fillDistanceSlider" min="0" max="15" value="7" step="1" oninput="onFillDistanceChange()">
-                <div class="range-info">
-                    <span class="range-min">0.3m</span>
-                    <span class="range-current" id="fillDistanceTag">2m</span>
-                    <span class="range-max">20m</span>
-                </div>
-            </div>
-
-            <div class="param-card accent-border hidden" id="darkAmbientCard">
-                <div class="param-header">
-                    <span class="param-label">☀️ 步骤1：环境光正确曝光</span>
-                </div>
-                <div style="font-size:11px;color:#777;margin-bottom:12px;">
-                    对环境光测光（取景后不包含主体的区域）
-                </div>
-                <div class="inline-row">
-                    <div>
-                        <div class="mini-label">光圈</div>
-                        <div class="mini-value" id="darkAmbientApertureDisplay">f/5.6</div>
-                        <input type="range" id="darkAmbientApertureSlider" min="0" max="26" value="15" step="1" oninput="onDarkAmbientApertureChange()">
-                        <div class="mini-tag" id="darkAmbientApertureTag">f/5.6</div>
-                    </div>
-                    <div>
-                        <div class="mini-label">快门</div>
-                        <div class="mini-value" id="darkAmbientShutterDisplay">1/125</div>
-                        <input type="range" id="darkAmbientShutterSlider" min="0" max="28" value="6" step="1" oninput="onDarkAmbientShutterChange()">
-                        <div class="mini-tag" id="darkAmbientShutterTag">1/125</div>
-                    </div>
-                </div>
-                <div style="margin-top:8px;text-align:center;">
-                    <span class="ev-badge" id="darkAmbientEVBadge">环境光 EV: 14.0</span>
-                </div>
-            </div>
-
-            <div class="param-card accent-border hidden" id="darkenAmountCard">
-                <div class="param-header">
-                    <span class="param-label">🌑 步骤2：压暗程度</span>
-                    <span class="param-value" id="darkenDisplay">2档</span>
-                </div>
-                <div class="darken-grid">
-                    <button class="darken-btn" id="darken1Btn" onclick="setDarkenAmount(1)">1 档<span class="darken-desc">轻微压暗</span></button>
-                    <button class="darken-btn active" id="darken2Btn" onclick="setDarkenAmount(2)">2 档<span class="darken-desc">明显压暗</span></button>
-                    <button class="darken-btn" id="darken3Btn" onclick="setDarkenAmount(3)">3 档<span class="darken-desc">重度压暗</span></button>
-                </div>
-                <div style="margin-top:10px;font-size:11px;color:#888;" id="darkenPreview">
-                    相机设定：f/11 · 1/125s · ISO100
-                </div>
-            </div>
-
-            <div class="param-card accent-border hidden" id="darkFlashCard">
-                <div class="param-header">
-                    <span class="param-label">⚡ 步骤3：闪光灯设置</span>
-                </div>
-                <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px;">闪光灯至主体距离</div>
-                <input type="range" id="darkDistanceSlider" min="0" max="15" value="7" step="1" oninput="onDarkDistanceChange()">
-                <div class="range-info">
-                    <span class="range-min">0.3m</span>
-                    <span class="range-current" id="darkDistanceTag">2m</span>
-                    <span class="range-max">20m</span>
-                </div>
-            </div>
-
-            <div class="param-card" id="apertureCard">
-                <div class="param-header">
-                    <span class="param-label" id="apertureLabel">光圈</span>
-                    <span class="param-value" id="apertureDisplay">f/2.8</span>
-                </div>
-                <input type="range" id="apertureSlider" min="0" max="26" value="9" step="1" oninput="onApertureChange()">
-                <div class="range-info">
-                    <span class="range-min" id="apertureMin">f/1.0</span>
-                    <span class="range-current" id="apertureTag">f/2.8</span>
-                    <span class="range-max" id="apertureMax">f/22</span>
-                </div>
-            </div>
-
-            <div class="param-card" id="shutterCard">
-                <div class="param-header">
-                    <span class="param-label">快门速度</span>
-                    <span class="param-value" id="shutterDisplay">1/125</span>
-                </div>
-                <input type="range" id="shutterSlider" min="0" max="28" value="6" step="1" oninput="onShutterChange()">
-                <div class="range-info">
-                    <span class="range-min" id="shutterMin">1/8000</span>
-                    <span class="range-current" id="shutterTag">1/125</span>
-                    <span class="range-max" id="shutterMax">2"</span>
-                </div>
-            </div>
-
-            <div class="param-card" id="distanceCard">
-                <div class="param-header">
-                    <span class="param-label">拍摄距离</span>
-                    <span class="param-value" id="distanceDisplay">2m</span>
-                </div>
-                <input type="range" id="distanceSlider" min="0" max="15" value="7" step="1" oninput="onDistanceChange()">
-                <div class="range-info">
-                    <span class="range-min" id="distanceMin">0.3m</span>
-                    <span class="range-current" id="distanceTag">2m</span>
-                    <span class="range-max" id="distanceMax">20m</span>
-                </div>
-            </div>
-
-            <div class="param-card" id="powerCard">
-                <div class="param-header">
-                    <span class="param-label">闪光功率</span>
-                    <span class="param-value" id="powerDisplay">1/4</span>
-                </div>
-                <div class="btn-grid" id="powerGrid"></div>
-                <div class="divider-label">微调 EV</div>
-                <div class="tune-row" id="tuneRow">
-                    <button onclick="setFineTune('-0.7')" id="tuneNeg07Btn">-0.7</button>
-                    <button onclick="setFineTune('-0.3')" id="tuneNeg03Btn">-0.3</button>
-                    <button onclick="setFineTune('base')" class="active-tune" id="tuneBaseBtn">标准</button>
-                    <button onclick="setFineTune('0.3')" id="tunePos03Btn">+0.3</button>
-                    <button onclick="setFineTune('0.7')" id="tunePos07Btn">+0.7</button>
-                </div>
-            </div>
-
-            <button class="calc-btn" onclick="calculate()">⚡ 计算曝光</button>
-        </div>
-
-        <div class="result-panel">
-            <div class="result-area" id="resultArea">
-                <h3>📊 计算结果</h3>
-                <div class="result-placeholder" id="resultPlaceholder">
-                    调整参数后<br>点击「⚡ 计算曝光」
-                </div>
-                <div id="resultContent" class="hidden"></div>
-            </div>
-        </div>
-    </div>
+  </div>
 </div>
 
-<div class="pwa-install-banner hidden" id="pwaInstallBanner">
-    <div class="pwa-banner-text">
-        📸 添加到主屏幕
-        <small>像App一样使用，无需下载</small>
+<!-- 第二步：输入新曝光 -->
+<div class="card" data-page-node-id="Q1nWjGO3TzT2nEDHbZBm3g">
+  <h2 data-page-node-id="wNH8CBs3Vfa6CAHUQpHd0E"><span class="step b" data-page-node-id="jLfxNVwSKyoQmPT1uon2Ns">2</span>输入另一组曝光，求解缺失项</h2>
+  <div class="radios" id="solveRadios" data-page-node-id="a8fd6KtRHKDanM3r9P3ASt">
+    <label data-page-node-id="FGvhP3vCiAWQTBZbFIcvGo"><input type="radio" name="solve" value="aperture" checked data-page-node-id="p4EplgNFP9liVhhO1icqJ0"><span data-page-node-id="jg2X3yHv47ty2HDwT3XHHD">求光圈</span></label>
+    <label data-page-node-id="1JsABmio3bIMp84vprOln0"><input type="radio" name="solve" value="shutter" data-page-node-id="cLaZYAY8TTElD8xqPVL7En"><span data-page-node-id="vj4Kgc21AAxGG0FZxJgAFq">求快门</span></label>
+  </div>
+  <div class="grid3" data-page-node-id="nHQTlt4kFGHDpTZJIdndUm">
+    <div class="field" data-page-node-id="GDfEFXgumAqNiO8e2EPE6c">
+      <label data-page-node-id="66rFkQfJNvFIeg9CnjQXF5">光圈 f/</label>
+      <input id="a2" inputmode="decimal" placeholder="f/值" list="apList" data-page-node-id="VjBZGmJOZ5DC1XUzbrFZO7">
     </div>
-    <div style="display:flex;align-items:center;">
-        <button class="pwa-banner-btn" id="pwaInstallBtn" onclick="installPWA()">安装</button>
-        <button class="pwa-banner-close" onclick="dismissPWABanner()">✕</button>
+    <div class="field" data-page-node-id="E2NzZd6F3zz8ueOjPBIcfQ">
+      <label data-page-node-id="mi983z9bwFTx61mpO2WtTO">快门（秒）</label>
+      <input id="t2" inputmode="decimal" placeholder="如 1/60 或 2" list="shList" data-page-node-id="x6VQv0aRkGa01Mis7t9QUQ">
     </div>
+    <div class="field" data-page-node-id="UGehrtUqENRiXWwL6qJT72">
+      <label data-page-node-id="wYjyC6xOqTwBmGVYoWIzMR">感光度 ISO</label>
+      <input id="s2" inputmode="numeric" placeholder="ISO" list="isoList" data-page-node-id="6BA3pGA1SB5QWviF0mrKOX">
+    </div>
+  </div>
+  <p class="hint" data-page-node-id="EKRB5QLBonKLGK5uqp6O5o">快门写法：分数 <b data-page-node-id="ymKYqfh6l0nT7SEePFlZZ2">1/250</b> 或小数秒 <b data-page-node-id="PhApmLL59NHQZOEYAIwo8i">0.5</b>、<b data-page-node-id="Dgf3NFuCRNRSBu4FkB58Q2">2</b> 均可。</p>
+  <div class="btn-row" style="margin-top:12px" data-page-node-id="AEm3PEltOCAXrCKVZKXXES">
+    <button class="primary" id="calcBtn" data-page-node-id="fx1ZzacbIxjwrlh0dULTMv">计算</button>
+  </div>
+  <div id="msg" data-page-node-id="0EGQkqwAMLsJg34QlljCmv"></div>
+
+  <div id="result" data-page-node-id="95z4qH75qaiGOyT3V4rFmh">
+    <div class="big" id="rBig" data-page-node-id="8z5UcCCBT26Y0TWL0AK640"></div>
+    <div class="row" data-page-node-id="CNFDLDmC7Ds0AEUMpeCUp7"><span data-page-node-id="EaQ7xSsWKBLADUmh6B9CBz">精确值</span><b id="rExact" data-page-node-id="alWCsCPB2kIHykXj5QGB8K"></b></div>
+    <div class="row" data-page-node-id="IxhG6ahOoDFEceMt8FIHPF"><span data-page-node-id="e20YKEzc9Ou2wxnMp7LEMP">最接近的标准档位</span><b id="rStd" data-page-node-id="cofREJZDjZTfFYc2go4M7M"></b></div>
+    <div class="row" data-page-node-id="NIgSHe0XQKI2vnwoBKei99"><span data-page-node-id="FE8mJMpH9LpFxcNZ3M7639">与标准档偏差</span><b id="rDiff" data-page-node-id="1xGSzSQbxrGRyrImw6ycOb"></b></div>
+    <div class="ev-row" data-page-node-id="GtYK0Lut0HaQvo1jbKStYD"><span id="evA" data-page-node-id="CRmu0QbGumk0KgV9J1xxSx"></span><span id="evB" data-page-node-id="jhr5xInCv3gRLYFZp0moh9"></span></div>
+  </div>
 </div>
+
+<!-- 第三步：闪光灯计算 -->
+<div class="card">
+  <h2><span class="step">3</span>闪光灯计算（闪光指数 GN）</h2>
+
+  <div class="field">
+    <label>闪光指数 GN（ISO100 · 米）</label>
+    <div class="chips" id="gnChips">
+      <button type="button" data-gn="12">12</button>
+      <button type="button" data-gn="24">24</button>
+      <button type="button" data-gn="36">36</button>
+      <button type="button" data-gn="45">45</button>
+      <button type="button" data-gn="60">60</button>
+      <button type="button" data-gn="80">80</button>
+    </div>
+    <input id="gn3" inputmode="decimal" placeholder="如 36">
+  </div>
+
+  <div class="grid3">
+    <div class="field">
+      <label>ND 减光镜</label>
+      <select id="nd3">
+        <option value="0" selected>无</option>
+        <option value="3">ND8（减 3 档）</option>
+        <option value="6">ND64（减 6 档）</option>
+        <option value="10">ND1000（减 10 档）</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>高速同步 HSS</label>
+      <select id="hss3">
+        <option value="off" selected>关闭（≤1/200s）</option>
+        <option value="on">开启（≤1/8000s）</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>微调 EV</label>
+      <select id="ev3">
+        <option value="-0.7">−0.7</option>
+        <option value="-0.3">−0.3</option>
+        <option value="0" selected>标准</option>
+        <option value="0.3">+0.3</option>
+        <option value="0.7">+0.7</option>
+      </select>
+    </div>
+  </div>
+
+  <p class="sec-label">工作模式</p>
+  <div class="radios" id="fmodeRadios">
+    <label><input type="radio" name="fmode" value="standard" checked><span>标准曝光</span></label>
+    <label><input type="radio" name="fmode" value="fill"><span>填充闪光</span></label>
+    <label><input type="radio" name="fmode" value="darken"><span>压暗背景</span></label>
+  </div>
+
+  <p class="sec-label">求解目标</p>
+  <div class="radios" id="fsolveRadios">
+    <label><input type="radio" name="fsolve" value="power" checked><span>求功率</span></label>
+    <label><input type="radio" name="fsolve" value="dist"><span>求距离</span></label>
+    <label id="fsolveApLabel"><input type="radio" name="fsolve" value="fap" id="fsolveAp"><span>求光圈</span></label>
+  </div>
+
+  <!-- 填充闪光：光比选择 -->
+  <div id="fillBlock" style="display:none">
+    <p class="sec-label">填充效果（闪光相对环境光）</p>
+    <div class="radios" id="ratioRadios">
+      <label><input type="radio" name="ratio" value="-2"><span>柔和补光 −2</span></label>
+      <label><input type="radio" name="ratio" value="0" checked><span>均衡填充 0</span></label>
+      <label><input type="radio" name="ratio" value="1"><span>突出主体 +1</span></label>
+      <label><input type="radio" name="ratio" value="2"><span>强闪光 +2</span></label>
+    </div>
+    <p class="hint">环境光取第 1 步照片的光圈 / 快门 / ISO，相机设定不变，只算闪光。</p>
+  </div>
+
+  <!-- 压暗背景：压暗程度 -->
+  <div id="darkBlock" style="display:none">
+    <p class="sec-label">压暗程度（环境光欠曝）</p>
+    <div class="radios" id="dkRadios">
+      <label><input type="radio" name="dk" value="1"><span>1 档 · 轻微</span></label>
+      <label><input type="radio" name="dk" value="2" checked><span>2 档 · 明显</span></label>
+      <label><input type="radio" name="dk" value="3"><span>3 档 · 重度</span></label>
+    </div>
+    <p class="hint">优先提高快门压暗（受同步速度 / HSS 限制），剩余部分收光圈；闪光补足主体曝光。</p>
+  </div>
+
+  <div class="grid3">
+    <div class="field">
+      <label>相机光圈 f/（标准模式）</label>
+      <input id="a3" inputmode="decimal" placeholder="如 2.8" list="apList">
+    </div>
+    <div class="field">
+      <label>快门（判断 HSS）</label>
+      <input id="t3" inputmode="decimal" value="1/125" list="shList">
+    </div>
+    <div class="field">
+      <label>闪光灯到主体距离（米）</label>
+      <input id="d3" inputmode="decimal" value="2">
+    </div>
+  </div>
+  <div class="field" style="margin-top:10px">
+    <label>当前闪光功率（求功率时无需填）</label>
+    <select id="p3">
+      <option value="1/1">1/1（全功率）</option>
+      <option value="1/2">1/2</option>
+      <option value="1/4" selected>1/4</option>
+      <option value="1/8">1/8</option>
+      <option value="1/16">1/16</option>
+      <option value="1/32">1/32</option>
+      <option value="1/64">1/64</option>
+      <option value="1/128">1/128</option>
+    </select>
+  </div>
+
+  <div class="btn-row" style="margin-top:12px">
+    <button class="primary" id="fcalcBtn">计算闪光</button>
+  </div>
+  <div id="fmsg"></div>
+
+  <div id="fresult">
+    <div class="big" id="fBig"></div>
+    <div class="row"><span>精确值</span><b id="fExact"></b></div>
+    <div class="row"><span>建议采用</span><b id="fStd"></b></div>
+    <div class="row"><span>余量 / 偏差</span><b id="fDiff"></b></div>
+    <div class="row"><span>相机设定</span><b id="fCam"></b></div>
+    <div class="ev-row"><span id="fNoteA"></span><span id="fNoteB"></span></div>
+  </div>
+</div>
+
+<!-- 标准档位候选 -->
+<datalist id="apList" data-page-node-id="vBVuySxbtw1Pg925eohfRg"></datalist>
+<datalist id="shList" data-page-node-id="6mIuvdRIMnx7JRPLG0Wn9C"></datalist>
+<datalist id="isoList" data-page-node-id="SnDnc0r2vFs4quGXUnWdkL"></datalist>
 
 <script>
-    // ==================== PWA ====================
-    let deferredPrompt = null;
-    let pwaDismissed = false;
+// ---------- 标准档位 ----------
+const APERTURES = [1,1.2,1.4,1.7,1.8,2,2.2,2.5,2.8,3.2,3.5,4,4.5,5,5.6,6.3,7.1,8,9,10,11,13,14,16,18,20,22];
+const SHUTTERS  = [1/8000,1/6400,1/5000,1/4000,1/3200,1/2500,1/2000,1/1600,1/1250,1/1000,1/800,1/640,1/500,1/400,1/320,1/250,1/200,1/160,1/125,1/100,1/80,1/60,1/50,1/40,1/30,1/25,1/20,1/15,1/13,1/10,1/8,1/6,1/5,1/4,0.3,0.4,0.5,0.6,0.8,1,1.3,1.6,2,2.5,3.2,4,5,6,8,10,13,15,20,25,30];
+const ISOS      = [25,32,40,50,64,80,100,125,160,200,250,320,400,500,640,800,1000,1250,1600,2000,2500,3200,4000,5000,6400,8000,10000,12800,16000,20000,25600,51200];
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            const swCode = `
-                const CACHE_NAME = 'flash-calc-v3';
-                const urlsToCache = ['/'];
-                self.addEventListener('install', event => {
-                    event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
-                    self.skipWaiting();
-                });
-                self.addEventListener('activate', event => {
-                    event.waitUntil(caches.keys().then(names => Promise.all(
-                        names.filter(n => n !== CACHE_NAME).map(n => caches.delete(n))
-                    )));
-                    self.clients.claim();
-                });
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        caches.match(event.request).then(resp => {
-                            return resp || fetch(event.request).then(response => {
-                                if (response && response.status === 200) {
-                                    const clone = response.clone();
-                                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-                                }
-                                return response;
-                            });
-                        }).catch(() => caches.match(event.request))
-                    );
-                });
-            `;
-            const swBlob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(swBlob);
-            navigator.serviceWorker.register(swUrl).catch(() => {});
-        });
+function fillDatalist(id, items, fmt) {
+  const dl = document.getElementById(id);
+  items.forEach(v => {
+    const o = document.createElement('option');
+    o.value = fmt(v);
+    dl.appendChild(o);
+  });
+}
+fillDatalist('apList', APERTURES, v => v);
+fillDatalist('shList', SHUTTERS, v => fmtShutter(v));
+fillDatalist('isoList', ISOS, v => v);
+
+// ---------- 工具函数 ----------
+function parseShutter(str) {
+  if (!str) return NaN;
+  str = String(str).trim().replace(/秒|s$/i, '');
+  if (str.includes('/')) {
+    const [a, b] = str.split('/').map(parseFloat);
+    return b ? a / b : NaN;
+  }
+  return parseFloat(str);
+}
+function fmtShutter(t) {
+  if (t >= 1) return (Math.round(t * 10) / 10) + ' s';
+  const d = Math.round(1 / t);
+  return '1/' + d + ' s';
+}
+function nearest(arr, val) {
+  let best = arr[0], bd = Infinity;
+  for (const v of arr) {
+    const d = Math.abs(Math.log2(v / val));
+    if (d < bd) { bd = d; best = v; }
+  }
+  return { value: best, stops: Math.log2(val / best) };
+}
+function fmtStops(x) {
+  const a = Math.abs(x);
+  if (a < 0.02) return '≈ 0 档';
+  return (x > 0 ? '+' : '−') + a.toFixed(2) + ' 档';
+}
+function ev100(N, t) { return Math.log2(N * N / t); }
+
+// ---------- 拍照 / 读取 EXIF ----------
+const thumb = document.getElementById('thumb');
+const exifMeta = document.getElementById('exifMeta');
+
+async function handleFile(file) {
+  if (!file) return;
+  thumb.src = URL.createObjectURL(file);
+  thumb.style.display = 'block';
+  setMsg('正在读取 EXIF…', 'ok');
+  try {
+    const ex = await exifr.parse(file, { pick: [
+      'FNumber','ApertureValue','ExposureTime','ShutterSpeedValue',
+      'ISO','ISOSpeedRatings','PhotographicSensitivity',
+      'Make','Model','LensModel','DateTimeOriginal','FocalLength'
+    ]});
+    if (!ex) throw new Error('no exif');
+
+    const N = ex.FNumber || (ex.ApertureValue ? Math.pow(Math.SQRT2, ex.ApertureValue) : NaN);
+    const t = ex.ExposureTime || (ex.ShutterSpeedValue ? Math.pow(2, -ex.ShutterSpeedValue) : NaN);
+    const S = ex.ISO || ex.ISOSpeedRatings || ex.PhotographicSensitivity || NaN;
+
+    let filled = 0;
+    if (isFinite(N)) { document.getElementById('a1').value = Math.round(N * 10) / 10; filled++; }
+    if (isFinite(t)) { document.getElementById('t1').value = fmtShutter(t); filled++; }
+    if (isFinite(S)) { document.getElementById('s1').value = Math.round(S); filled++; }
+
+    const meta = [ex.Make, ex.Model, ex.LensModel, ex.FocalLength ? ex.FocalLength + 'mm' : '']
+      .filter(Boolean).join(' · ');
+    exifMeta.textContent = meta;
+    exifMeta.style.display = meta ? 'block' : 'none';
+
+    if (filled === 3) {
+      setMsg(`已读取：f/${document.getElementById('a1').value} · ${fmtShutter(t)} · ISO ${Math.round(S)}`, 'ok');
+    } else if (filled > 0) {
+      setMsg('部分曝光参数缺失，请手动补全第 1 步。', 'err');
+    } else {
+      setMsg('照片不含曝光信息（可能被压缩过），请手动填写第 1 步。', 'err');
     }
+  } catch (e) {
+    setMsg('未能读取 EXIF，请手动填写第 1 步的三项参数。', 'err');
+  }
+}
+document.getElementById('cameraInput').addEventListener('change', e => handleFile(e.target.files[0]));
+document.getElementById('galleryInput').addEventListener('change', e => handleFile(e.target.files[0]));
 
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        if (!pwaDismissed && !isStandalone()) {
-            setTimeout(() => showPWABanner(), 2000);
-        }
-    });
+// ---------- 求解逻辑 ----------
+function setMsg(t, cls) {
+  const m = document.getElementById('msg');
+  m.textContent = t || '';
+  m.className = cls || '';
+}
 
-    function isStandalone() {
-        return window.matchMedia('(display-mode: standalone)').matches
-            || navigator.standalone
-            || document.referrer.includes('android-app://');
+function readSet(n) {
+  return {
+    N: parseFloat(document.getElementById('a' + n).value.replace(/^f\/?/i, '')),
+    t: parseShutter(document.getElementById('t' + n).value),
+    S: parseFloat(document.getElementById('s' + n).value)
+  };
+}
+
+document.getElementById('calcBtn').addEventListener('click', () => {
+  const a = readSet('1');
+  if (![a.N, a.t, a.S].every(v => isFinite(v) && v > 0)) {
+    setMsg('第 1 步的光圈、快门、ISO 需要齐全且为正数。', 'err');
+    return;
+  }
+  const target = document.querySelector('input[name=solve]:checked').value;
+  const b = readSet('2');
+  const K = a.t * a.S / (a.N * a.N); // 曝光常数 t·S/N²
+
+  let res, exactTxt, stdTxt, stdVal;
+  if (target === 'aperture') {
+    if (![b.t, b.S].every(v => isFinite(v) && v > 0))
+      return setMsg('请填写第 2 步的快门和 ISO。', 'err');
+    res = Math.sqrt(b.t * b.S / K);
+    const n = nearest(APERTURES, res);
+    exactTxt = 'f/' + res.toFixed(2);
+    stdTxt = 'f/' + n.value; stdVal = n;
+    document.getElementById('a2').value = n.value;
+  } else if (target === 'shutter') {
+    if (![b.N, b.S].every(v => isFinite(v) && v > 0))
+      return setMsg('请填写第 2 步的光圈和 ISO。', 'err');
+    res = K * b.N * b.N / b.S;
+    const n = nearest(SHUTTERS, res);
+    exactTxt = fmtShutter(res);
+    stdTxt = fmtShutter(n.value); stdVal = n;
+    document.getElementById('t2').value = fmtShutter(n.value);
+  }
+
+  const label = { aperture: '光圈', shutter: '快门' }[target];
+  document.getElementById('rBig').textContent = label + ' ≈ ' + stdTxt;
+  document.getElementById('rExact').textContent = exactTxt;
+  document.getElementById('rStd').textContent = stdTxt;
+  document.getElementById('rDiff').textContent = fmtStops(stdVal.stops);
+  document.getElementById('evA').textContent = '照片曝光 EV₁₀₀ = ' + ev100(a.N, a.t).toFixed(1) + '（ISO ' + a.S + '）';
+
+  const N2 = target === 'aperture' ? stdVal.value : b.N;
+  const t2 = target === 'shutter' ? stdVal.value : b.t;
+  document.getElementById('evB').textContent = '新组合 EV₁₀₀ = ' + ev100(N2, t2).toFixed(1);
+  document.getElementById('result').style.display = 'block';
+  setMsg('计算完成。', 'ok');
+});
+
+// ---------- 闪光灯计算（GN 法则） ----------
+const POWERS = [1, 1/2, 1/4, 1/8, 1/16, 1/32, 1/64, 1/128];
+function parsePower(str) {
+  const [a, b] = str.split('/').map(parseFloat);
+  return b ? a / b : a;
+}
+function fmtPower(f) { return f >= 1 ? '1/1' : '1/' + Math.round(1 / f); }
+
+function setFMsg(t, cls) {
+  const m = document.getElementById('fmsg');
+  m.textContent = t || '';
+  m.className = cls || '';
+}
+
+// GN 快捷档位
+document.querySelectorAll('#gnChips button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('gn3').value = btn.dataset.gn;
+  });
+});
+
+// 模式切换：显示对应选项块；非标准模式禁用「求光圈」
+function syncFMode() {
+  const m = document.querySelector('input[name=fmode]:checked').value;
+  document.getElementById('fillBlock').style.display = m === 'fill' ? 'block' : 'none';
+  document.getElementById('darkBlock').style.display = m === 'darken' ? 'block' : 'none';
+  const apLabel = document.getElementById('fsolveApLabel');
+  const apRadio = document.getElementById('fsolveAp');
+  if (m === 'standard') {
+    apLabel.classList.remove('disabled');
+    apRadio.disabled = false;
+  } else {
+    apLabel.classList.add('disabled');
+    apRadio.disabled = true;
+    if (apRadio.checked)
+      document.querySelector('input[name=fsolve][value=power]').checked = true;
+  }
+}
+document.querySelectorAll('input[name=fmode]').forEach(r => r.addEventListener('change', syncFMode));
+syncFMode();
+
+document.getElementById('fcalcBtn').addEventListener('click', () => {
+  // 全局参数
+  const GN  = parseFloat(document.getElementById('gn3').value);
+  const ISO = parseFloat(document.getElementById('s1').value);
+  const nd  = parseFloat(document.getElementById('nd3').value);
+  const evT = parseFloat(document.getElementById('ev3').value);
+  const hss = document.getElementById('hss3').value === 'on';
+  const t3  = parseShutter(document.getElementById('t3').value) || 1/125;
+  const D   = parseFloat(document.getElementById('d3').value);
+  const pw  = parsePower(document.getElementById('p3').value);
+
+  if (!(GN > 0))  return setFMsg('请填写闪光指数 GN。', 'err');
+  if (!(ISO > 0)) return setFMsg('ISO 取自第 1 步，请先拍照或手动填写感光度。', 'err');
+
+  // HSS 开启且快门快于同步速度时，闪光有效输出约降 2 档（近似）
+  const hssF = (hss && t3 < 1/200) ? 0.5 : 1;
+  const ndF  = Math.pow(2, nd / 2);          // ND 需要的额外 GN 倍数
+  const gnISO = GN * Math.sqrt(ISO / 100);   // ISO 修正后的 GN
+
+  const mode   = document.querySelector('input[name=fmode]:checked').value;
+  const target = document.querySelector('input[name=fsolve]:checked').value;
+
+  // 确定「闪光正确曝光所需光圈」Nreq 与相机设定说明
+  let Nreq, camTxt, ratioTxt = '';
+  if (mode === 'standard') {
+    Nreq = parseFloat(document.getElementById('a3').value);
+    if (target !== 'fap' && !(Nreq > 0))
+      return setFMsg('标准模式请填写相机光圈 f/。', 'err');
+    camTxt = 'f/' + (Nreq || '—') + ' · ' + fmtShutter(t3) + ' · ISO ' + ISO;
+  } else {
+    const a = readSet('1');
+    if (![a.N, a.t, a.S].every(v => isFinite(v) && v > 0))
+      return setFMsg('填充 / 压暗模式需要第 1 步的环境光曝光（光圈、快门、ISO）。', 'err');
+    if (mode === 'fill') {
+      const R = parseFloat(document.querySelector('input[name=ratio]:checked').value);
+      Nreq = a.N / Math.pow(2, R / 2); // 闪光单独正确曝光所需光圈
+      camTxt = 'f/' + a.N + ' · ' + fmtShutter(a.t) + ' · ISO ' + a.S + '（不变）';
+      ratioTxt = '目标：闪光 ' + (R > 0 ? '亮 ' + R : R < 0 ? '暗 ' + (-R) : '等亮 0') + ' EV 于环境光（EV₁₀₀ = '
+        + (ev100(a.N, a.t) - Math.log2(a.S / 100)).toFixed(1) + '）';
+    } else {
+      const k = parseFloat(document.querySelector('input[name=dk]:checked').value);
+      const tLim = hss ? 1/8000 : 1/200;
+      const tNew = Math.max(a.t / Math.pow(2, k), tLim);
+      const kAp = k - Math.log2(a.t / tNew);   // 快门压不掉的部分转给光圈
+      const aNew = a.N * Math.pow(2, kAp / 2);
+      Nreq = aNew; // 闪光作为主体主光源
+      camTxt = 'f/' + aNew.toFixed(1) + ' · ' + fmtShutter(tNew) + ' · ISO ' + a.S
+        + (kAp > 0.01 ? '（快门已顶到 ' + fmtShutter(tLim) + '，光圈再收 ' + kAp.toFixed(1) + ' 档）' : '（全部由快门压暗）');
     }
+  }
+
+  const gnAvail = gnISO * hssF; // 全功率、ISO/HSS 修正后的可用 GN（未含功率档与 ND）
+
+  let big, exact, std, diff;
+  if (target === 'fap') {
+    if (!(D > 0)) return setFMsg('请填写闪光灯到主体的距离。', 'err');
+    const N = gnAvail * Math.sqrt(pw) / (D * ndF) * Math.pow(2, evT / 2);
+    const n = nearest(APERTURES, N);
+    big = '光圈 ≈ f/' + n.value;
+    exact = 'f/' + N.toFixed(2);
+    std = 'f/' + n.value;
+    diff = fmtStops(n.stops);
+    document.getElementById('a3').value = n.value;
+  } else if (target === 'power') {
+    if (!(D > 0)) return setFMsg('请填写闪光灯到主体的距离。', 'err');
+    const gnReq = Nreq * D * ndF * Math.pow(2, evT / 2);
+    const frac = Math.pow(gnReq / gnAvail, 2);
+    if (frac > 1)
+      return setFMsg('全功率也不够：请缩短距离、开大光圈或提高 ISO。', 'err');
+    let step = POWERS[POWERS.length - 1];
+    for (const P of POWERS) if (P >= frac) step = P; // 取满足需求的最小功率档
+    const headroom = Math.log2(step / frac);
+    big = '功率 ≈ ' + fmtPower(step);
+    exact = '1/' + (1 / frac).toFixed(1);
+    std = fmtPower(step) + (step >= 1 ? '（全功率）' : '');
+    diff = '余量 ' + (headroom < 0.02 ? '≈ 0' : headroom.toFixed(2)) + ' 档';
+    document.getElementById('p3').value = fmtPower(step);
+  } else { // dist
+    const Dmax = gnAvail * Math.sqrt(pw) / (Nreq * ndF) * Math.pow(2, evT / 2);
+    const snapped = Math.max(0.3, Math.round(Dmax * 10) / 10);
+    big = '距离 ≤ ' + snapped + ' m';
+    exact = Dmax.toFixed(2) + ' m';
+    std = snapped + ' m';
+    diff = fmtStops(Math.log2(Dmax / snapped));
+    document.getElementById('d3').value = snapped;
+  }
+
+  document.getElementById('fBig').textContent = big;
+  document.getElementById('fExact').textContent = exact;
+  document.getElementById('fStd').textContent = std;
+  document.getElementById('fDiff').textContent = diff;
+  document.getElementById('fCam').textContent = camTxt;
+  document.getElementById('fNoteA').textContent = ratioTxt ||
+    ({ standard: '标准直闪：闪光为主体主光源', fill: '', darken: '压暗背景：闪光补足主体，环境按设定欠曝' }[mode]);
+  document.getElementById('fNoteB').textContent =
+    '有效 GN = ' + (gnAvail).toFixed(1) + ' m' + (hssF < 1 ? '（HSS 已减半）' : '') + (nd > 0 ? '，ND 需 +' + nd + ' 档补偿' : '');
+  document.getElementById('fresult').style.display = 'block';
+  setFMsg('计算完成。', 'ok');
+});
 
-    function showPWABanner() {
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner && !pwaDismissed) banner.classList.remove('hidden');
-    }
-
-    function dismissPWABanner() {
-        pwaDismissed = true;
-        const banner = document.getElementById('pwaInstallBanner');
-        if (banner) banner.classList.add('hidden');
-        setTimeout(() => { pwaDismissed = false; }, 30 * 24 * 60 * 60 * 1000);
-    }
-
-    function installPWA() {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            deferredPrompt.userChoice.then(() => { deferredPrompt = null; dismissPWABanner(); });
-        } else if (navigator.userAgent.match(/iPhone|iPad|iPod/)) {
-            alert('📱 请点击浏览器底部的\n「分享」→「添加到主屏幕」\n即可像App一样使用');
-            dismissPWABanner();
-        }
-    }
-
-    if (isStandalone()) pwaDismissed = true;
-
-    // ==================== 数据定义 ====================
-    const APERTURE_VALUES = [1.0, 1.1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.5, 2.8, 3.2, 3.5, 4.0, 4.5, 5.0, 5.6, 6.3, 7.1, 8.0, 9.0, 10, 11, 13, 16, 18, 20, 22];
-    const ISO_VALUES = [50, 64, 80, 100, 125, 160, 200, 250, 320, 400, 500, 640, 800, 1000, 1600, 3200, 6400];
-    const DISTANCE_VALUES = [0.3, 0.5, 0.7, 1.0, 1.2, 1.5, 1.8, 2.0, 2.5, 3.0, 4.0, 5.0, 7.0, 10, 15, 20];
-
-    const SHUTTER_NO_HSS = [
-        { label: '1/200', sec: 1/200 }, { label: '1/160', sec: 1/160 }, { label: '1/125', sec: 1/125 },
-        { label: '1/100', sec: 1/100 }, { label: '1/80', sec: 1/80 }, { label: '1/60', sec: 1/60 },
-        { label: '1/50', sec: 1/50 }, { label: '1/40', sec: 1/40 }, { label: '1/30', sec: 1/30 },
-        { label: '1/25', sec: 1/25 }, { label: '1/20', sec: 1/20 }, { label: '1/15', sec: 1/15 },
-        { label: '1/13', sec: 1/13 }, { label: '1/10', sec: 1/10 }, { label: '1/8', sec: 1/8 },
-        { label: '1/6', sec: 1/6 }, { label: '1/5', sec: 1/5 }, { label: '1/4', sec: 1/4 },
-        { label: '1/3', sec: 1/3 }, { label: '1/2.5', sec: 1/2.5 }, { label: '1/2', sec: 1/2 },
-        { label: '1/1.6', sec: 1/1.6 }, { label: '1/1.3', sec: 1/1.3 }, { label: '1"', sec: 1 },
-        { label: '1.3"', sec: 1.3 }, { label: '1.6"', sec: 1.6 }, { label: '2"', sec: 2 }
-    ];
-    const SHUTTER_HSS = [
-        { label: '1/8000', sec: 1/8000 }, { label: '1/4000', sec: 1/4000 }, { label: '1/2000', sec: 1/2000 },
-        { label: '1/1000', sec: 1/1000 }, { label: '1/500', sec: 1/500 }, { label: '1/250', sec: 1/250 },
-        { label: '1/200', sec: 1/200 }, { label: '1/160', sec: 1/160 }, { label: '1/125', sec: 1/125 },
-        { label: '1/100', sec: 1/100 }, { label: '1/80', sec: 1/80 }, { label: '1/60', sec: 1/60 },
-        { label: '1/50', sec: 1/50 }, { label: '1/40', sec: 1/40 }, { label: '1/30', sec: 1/30 },
-        { label: '1/25', sec: 1/25 }, { label: '1/20', sec: 1/20 }, { label: '1/15', sec: 1/15 },
-        { label: '1/13', sec: 1/13 }, { label: '1/10', sec: 1/10 }, { label: '1/8', sec: 1/8 },
-        { label: '1/6', sec: 1/6 }, { label: '1/5', sec: 1/5 }, { label: '1/4', sec: 1/4 },
-        { label: '1/3', sec: 1/3 }, { label: '1/2.5', sec: 1/2.5 }, { label: '1/2', sec: 1/2 },
-        { label: '1/1.6', sec: 1/1.6 }, { label: '1/1.3', sec: 1/1.3 }, { label: '1"', sec: 1 },
-        { label: '1.3"', sec: 1.3 }, { label: '1.6"', sec: 1.6 }, { label: '2"', sec: 2 }
-    ];
-
-    const POWER_STEPS = [
-        { label: '1/1', value: 1 }, { label: '1/2', value: 1/2 }, { label: '1/4', value: 1/4 },
-        { label: '1/8', value: 1/8 }, { label: '1/16', value: 1/16 }, { label: '1/32', value: 1/32 },
-        { label: '1/64', value: 1/64 }, { label: '1/128', value: 1/128 }, { label: '1/256', value: 1/256 }
-    ];
-
-    const FINE_TUNES = {
-        '-0.7': Math.pow(2, -0.7), '-0.3': Math.pow(2, -0.3),
-        'base': 1.0, '0.3': Math.pow(2, 0.3), '0.7': Math.pow(2, 0.7)
-    };
-
-    const ND_STOPS = { 3: 3, 6: 6, 10: 10 };
-
-    const FILL_EFFECTS = {
-        'subtle': { evOffset: -1, name: '柔和补光', ratio: '1:2（闪光:环境光）', desc: '阴影轻微提亮，效果自然' },
-        'balanced': { evOffset: 0, name: '均衡填充', ratio: '1:1', desc: '闪光与环境光等量，平衡自然' },
-        'dominant': { evOffset: 1, name: '突出主体', ratio: '2:1（闪光:环境光）', desc: '闪光为主，主体突出，背景可见' },
-        'strong': { evOffset: 2, name: '强闪光', ratio: '4:1（闪光:环境光）', desc: '闪光主导，背景较暗，戏剧感' },
-    };
-
-    // ==================== 状态 ====================
-    let gnValue = 36;
-    let hssEnabled = false;
-    let currentMode = 'exposure';
-    let currentSubMode = 'aperture';
-    let isoIndex = 3;
-    let apertureIndex = 9;
-    let shutterIndex = 6;
-    let distanceIndex = 7;
-    let powerIndex = 2;
-    let fineTuneKey = 'base';
-    let ndStops = 3;
-
-    let fillAmbientApertureIndex = 15;
-    let fillAmbientShutterIndex = 6;
-    let fillEffectKey = 'balanced';
-    let fillDistanceIndex = 7;
-    let fillCurrentStep = 1;
-
-    let darkAmbientApertureIndex = 15;
-    let darkAmbientShutterIndex = 6;
-    let darkenAmount = 2;
-    let darkDistanceIndex = 7;
-    let darkCurrentStep = 1;
-
-    // ==================== 向导步骤控制 ====================
-    function updateFillWizardSteps(activeStep) {
-        fillCurrentStep = activeStep;
-        const steps = [
-            { step: 'fillStep1', line: null },
-            { step: 'fillStep2', line: 'fillLine1' },
-            { step: 'fillStep3', line: 'fillLine2' }
-        ];
-
-        steps.forEach((s, i) => {
-            const stepEl = document.getElementById(s.step);
-            const lineEl = s.line ? document.getElementById(s.line) : null;
-
-            if (!stepEl) return;
-
-            stepEl.classList.remove('active', 'done');
-            if (lineEl) lineEl.classList.remove('done');
-
-            if (i + 1 < activeStep) {
-                stepEl.classList.add('done');
-                if (lineEl) lineEl.classList.add('done');
-            } else if (i + 1 === activeStep) {
-                stepEl.classList.add('active');
-            }
-        });
-    }
-
-    function updateDarkWizardSteps(activeStep) {
-        darkCurrentStep = activeStep;
-        const steps = [
-            { step: 'darkStep1', line: null },
-            { step: 'darkStep2', line: 'darkLine1' },
-            { step: 'darkStep3', line: 'darkLine2' }
-        ];
-
-        steps.forEach((s, i) => {
-            const stepEl = document.getElementById(s.step);
-            const lineEl = s.line ? document.getElementById(s.line) : null;
-
-            if (!stepEl) return;
-
-            stepEl.classList.remove('active', 'done');
-            if (lineEl) lineEl.classList.remove('done');
-
-            if (i + 1 < activeStep) {
-                stepEl.classList.add('done');
-                if (lineEl) lineEl.classList.add('done');
-            } else if (i + 1 === activeStep) {
-                stepEl.classList.add('active');
-            }
-        });
-    }
-
-    // ==================== 辅助函数 ====================
-    function getISOArr() { return ISO_VALUES; }
-    function getApertureArr() { return APERTURE_VALUES; }
-    function getDistanceArr() { return DISTANCE_VALUES; }
-    function getShutterArr() { return hssEnabled ? SHUTTER_HSS : SHUTTER_NO_HSS; }
-    function getISO() { return getISOArr()[isoIndex]; }
-    function getAperture() { return getApertureArr()[apertureIndex]; }
-    function getShutterSec() { return getShutterArr()[shutterIndex].sec; }
-    function getShutterLabel() { return getShutterArr()[shutterIndex].label; }
-    function getDistance() { return getDistanceArr()[distanceIndex]; }
-    function getPower() { return POWER_STEPS[powerIndex].value * FINE_TUNES[fineTuneKey]; }
-    function getEffectiveGN() { return gnValue * Math.sqrt(getISO() / 100) * Math.sqrt(getPower()); }
-    function getNDFactor() { return currentMode === 'nd' ? Math.pow(2, ND_STOPS[ndStops]) : 1; }
-    function getMaxSyncShutter() { return hssEnabled ? 1/8000 : 1/200; }
-
-    function calcEV(aperture, shutterSec, iso) {
-        return Math.log2((aperture * aperture) / shutterSec * (100 / iso));
-    }
-
-    function getDarkenedAperture(ambientAp, shutterSec, iso, stops) {
-        const ev = calcEV(ambientAp, shutterSec, iso);
-        return Math.sqrt(Math.pow(2, ev - stops) * shutterSec * (iso / 100));
-    }
-
-    function findClosestApertureIndex(targetAp) {
-        let best = 0, minDiff = Infinity;
-        APERTURE_VALUES.forEach((ap, i) => {
-            const diff = Math.abs(ap - targetAp);
-            if (diff < minDiff) { minDiff = diff; best = i; }
-        });
-        return best;
-    }
-
-    function powerToDisplay(powerRatio) {
-        if (powerRatio <= 0.001) return { frac: '1/256-', ev: 'base', pct: (powerRatio*100).toFixed(1) + '%' };
-        if (powerRatio > 1.5) return { frac: '>1/1', ev: 'base', pct: (powerRatio*100).toFixed(0) + '%' };
-        let best = POWER_STEPS[0], bestDiff = Infinity;
-        POWER_STEPS.forEach(p => {
-            const diff = Math.abs(p.value - powerRatio);
-            if (diff < bestDiff) { bestDiff = diff; best = p; }
-        });
-        if (bestDiff < 0.015) return { frac: best.label, ev: 'base', pct: (powerRatio*100).toFixed(0) + '%' };
-        const ratio = powerRatio / best.value;
-        if (ratio > 1.25) return { frac: best.label, ev: '+0.7', pct: (powerRatio*100).toFixed(0) + '%' };
-        if (ratio > 1.1) return { frac: best.label, ev: '+0.3', pct: (powerRatio*100).toFixed(0) + '%' };
-        if (ratio < 0.75) return { frac: best.label, ev: '-0.7', pct: (powerRatio*100).toFixed(0) + '%' };
-        if (ratio < 0.9) return { frac: best.label, ev: '-0.3', pct: (powerRatio*100).toFixed(0) + '%' };
-        return { frac: best.label, ev: 'base', pct: (powerRatio*100).toFixed(0) + '%' };
-    }
-
-    // ==================== GN 输入 ====================
-    function onGNInput() {
-        let v = document.getElementById('gnInput').value.replace(/[^\d]/g, '');
-        if (v.length > 3) v = v.slice(0, 3);
-        document.getElementById('gnInput').value = v;
-        if (v !== '') { const n = parseInt(v, 10); if (!isNaN(n) && n >= 1 && n <= 200) gnValue = n; }
-    }
-    function onGNBlur() {
-        const v = document.getElementById('gnInput').value;
-        const n = parseInt(v, 10);
-        if (v === '' || isNaN(n) || n < 1) { gnValue = 36; document.getElementById('gnInput').value = 36; }
-        else if (n > 200) { gnValue = 200; document.getElementById('gnInput').value = 200; }
-        else { gnValue = n; document.getElementById('gnInput').value = gnValue; }
-        clearResult();
-    }
-    function onGNChange() { onGNBlur(); }
-    function setGNPreset(v) { gnValue = v; document.getElementById('gnInput').value = v; clearResult(); }
-
-    function setHSS(val) {
-        hssEnabled = val;
-        document.getElementById('hssDisplay').textContent = val ? '开启' : '关闭';
-        document.getElementById('hssDisplay').style.color = val ? '#4caf50' : '#ffb800';
-        const o = document.getElementById('hssOffBtn'), n = document.getElementById('hssOnBtn');
-        [o, n].forEach(b => { b.classList.remove('active'); b.style.background = '#1a1a1a'; b.style.color = '#ccc'; b.style.borderColor = '#333'; });
-        const a = val ? n : o;
-        a.classList.add('active'); a.style.background = '#ffb800'; a.style.color = '#000'; a.style.borderColor = '#ffb800';
-
-        const sh = getShutterArr();
-        [shutterIndex, fillAmbientShutterIndex, darkAmbientShutterIndex].forEach((idx, i, arr) => {
-            if (idx >= sh.length) arr[i] = sh.length - 1;
-        });
-        ['shutterSlider','fillAmbientShutterSlider','darkAmbientShutterSlider'].forEach(id => {
-            const el = document.getElementById(id);
-            if (el) el.max = sh.length - 1;
-        });
-        document.getElementById('shutterSlider').value = shutterIndex;
-        document.getElementById('fillAmbientShutterSlider').value = fillAmbientShutterIndex;
-        document.getElementById('darkAmbientShutterSlider').value = darkAmbientShutterIndex;
-        updateShutterDisplay();
-        updateFillAmbientDisplay();
-        updateDarkAmbientDisplay();
-        updateFillPreview();
-        updateDarkenPreview();
-        checkShutterWarning();
-        clearResult();
-    }
-
-    function checkShutterWarning() {
-        const card = document.getElementById('shutterCard');
-        if (getShutterArr()[shutterIndex].sec < getMaxSyncShutter() && !hssEnabled) card.classList.add('warning-border');
-        else card.classList.remove('warning-border');
-    }
-
-    function onISOChange() {
-        isoIndex = parseInt(document.getElementById('isoSlider').value);
-        const arr = getISOArr();
-        document.getElementById('isoDisplay').textContent = arr[isoIndex];
-        document.getElementById('isoTag').textContent = arr[isoIndex];
-        document.getElementById('isoMin').textContent = arr[0];
-        document.getElementById('isoMax').textContent = arr[arr.length-1];
-        updateFillAmbientDisplay();
-        updateDarkAmbientDisplay();
-        updateFillPreview();
-        updateDarkenPreview();
-        clearResult();
-    }
-
-    function onApertureChange() {
-        apertureIndex = parseInt(document.getElementById('apertureSlider').value);
-        const v = 'f/' + getApertureArr()[apertureIndex];
-        document.getElementById('apertureDisplay').textContent = v;
-        document.getElementById('apertureTag').textContent = v;
-        document.getElementById('apertureMin').textContent = 'f/' + getApertureArr()[0];
-        document.getElementById('apertureMax').textContent = 'f/' + getApertureArr()[getApertureArr().length-1];
-        clearResult();
-    }
-
-    function onShutterChange() {
-        shutterIndex = parseInt(document.getElementById('shutterSlider').value);
-        updateShutterDisplay();
-        checkShutterWarning();
-        clearResult();
-    }
-
-    function updateShutterDisplay() {
-        const v = getShutterArr()[shutterIndex].label;
-        document.getElementById('shutterDisplay').textContent = v;
-        document.getElementById('shutterTag').textContent = v;
-        document.getElementById('shutterMin').textContent = getShutterArr()[0].label;
-        document.getElementById('shutterMax').textContent = getShutterArr()[getShutterArr().length-1].label;
-    }
-
-    function onDistanceChange() {
-        distanceIndex = parseInt(document.getElementById('distanceSlider').value);
-        const v = getDistanceArr()[distanceIndex] + 'm';
-        document.getElementById('distanceDisplay').textContent = v;
-        document.getElementById('distanceTag').textContent = v;
-        document.getElementById('distanceMin').textContent = getDistanceArr()[0] + 'm';
-        document.getElementById('distanceMax').textContent = getDistanceArr()[getDistanceArr().length-1] + 'm';
-        clearResult();
-    }
-
-    // ==================== 填充闪光事件 ====================
-    function onFillAmbientApertureChange() {
-        fillAmbientApertureIndex = parseInt(document.getElementById('fillAmbientApertureSlider').value);
-        updateFillAmbientDisplay();
-        updateFillPreview();
-        updateFillWizardSteps(1);
-        clearResult();
-    }
-    function onFillAmbientShutterChange() {
-        fillAmbientShutterIndex = parseInt(document.getElementById('fillAmbientShutterSlider').value);
-        updateFillAmbientDisplay();
-        updateFillPreview();
-        updateFillWizardSteps(1);
-        clearResult();
-    }
-    function updateFillAmbientDisplay() {
-        const ap = APERTURE_VALUES[fillAmbientApertureIndex];
-        const sh = getShutterArr()[fillAmbientShutterIndex].label;
-        document.getElementById('fillAmbientApertureDisplay').textContent = 'f/' + ap;
-        document.getElementById('fillAmbientApertureTag').textContent = 'f/' + ap;
-        document.getElementById('fillAmbientShutterDisplay').textContent = sh;
-        document.getElementById('fillAmbientShutterTag').textContent = sh;
-        document.getElementById('fillAmbientEVBadge').textContent = '环境光 EV: ' + calcEV(ap, getShutterArr()[fillAmbientShutterIndex].sec, getISO()).toFixed(1);
-    }
-    function setFillEffect(key) {
-        fillEffectKey = key;
-        ['subtle','balanced','dominant','strong'].forEach(k => {
-            const btn = document.getElementById('fill' + k.charAt(0).toUpperCase() + k.slice(1) + 'Btn');
-            if (btn) {
-                btn.classList.toggle('active', k === key);
-                btn.style.background = k === key ? '#ff9800' : '#1a1a1a';
-                btn.style.color = k === key ? '#000' : '#ccc';
-                btn.style.borderColor = k === key ? '#ff9800' : '#333';
-            }
-        });
-        updateFillPreview();
-        updateFillWizardSteps(2);
-        clearResult();
-    }
-    function updateFillPreview() {
-        const eff = FILL_EFFECTS[fillEffectKey];
-        document.getElementById('fillEffectPreview').textContent =
-            '闪光需比环境光亮 ' + (eff.evOffset >= 0 ? '+' : '') + eff.evOffset + ' EV（' + eff.ratio + '）';
-    }
-    function onFillDistanceChange() {
-        fillDistanceIndex = parseInt(document.getElementById('fillDistanceSlider').value);
-        document.getElementById('fillDistanceTag').textContent = DISTANCE_VALUES[fillDistanceIndex] + 'm';
-        updateFillWizardSteps(3);
-        clearResult();
-    }
-
-    // ==================== 压暗背景事件 ====================
-    function onDarkAmbientApertureChange() {
-        darkAmbientApertureIndex = parseInt(document.getElementById('darkAmbientApertureSlider').value);
-        updateDarkAmbientDisplay();
-        updateDarkenPreview();
-        updateDarkWizardSteps(1);
-        clearResult();
-    }
-    function onDarkAmbientShutterChange() {
-        darkAmbientShutterIndex = parseInt(document.getElementById('darkAmbientShutterSlider').value);
-        updateDarkAmbientDisplay();
-        updateDarkenPreview();
-        updateDarkWizardSteps(1);
-        clearResult();
-    }
-    function updateDarkAmbientDisplay() {
-        const ap = APERTURE_VALUES[darkAmbientApertureIndex];
-        const sh = getShutterArr()[darkAmbientShutterIndex].label;
-        document.getElementById('darkAmbientApertureDisplay').textContent = 'f/' + ap;
-        document.getElementById('darkAmbientApertureTag').textContent = 'f/' + ap;
-        document.getElementById('darkAmbientShutterDisplay').textContent = sh;
-        document.getElementById('darkAmbientShutterTag').textContent = sh;
-        document.getElementById('darkAmbientEVBadge').textContent = '环境光 EV: ' + calcEV(ap, getShutterArr()[darkAmbientShutterIndex].sec, getISO()).toFixed(1);
-    }
-    function setDarkenAmount(stops) {
-        darkenAmount = stops;
-        document.getElementById('darkenDisplay').textContent = stops + '档';
-        [1,2,3].forEach(s => {
-            const btn = document.getElementById('darken' + s + 'Btn');
-            if (btn) {
-                btn.classList.toggle('active', s === stops);
-                btn.style.background = s === stops ? '#ffb800' : '#1a1a1a';
-                btn.style.color = s === stops ? '#000' : '#ccc';
-                btn.style.borderColor = s === stops ? '#ffb800' : '#333';
-            }
-        });
-        updateDarkenPreview();
-        updateDarkWizardSteps(2);
-        clearResult();
-    }
-    function updateDarkenPreview() {
-        const ap = APERTURE_VALUES[darkAmbientApertureIndex];
-        const shSec = getShutterArr()[darkAmbientShutterIndex].sec;
-        const shLabel = getShutterArr()[darkAmbientShutterIndex].label;
-        const iso = getISO();
-        const dap = getDarkenedAperture(ap, shSec, iso, darkenAmount);
-        const closest = APERTURE_VALUES[findClosestApertureIndex(dap)];
-        document.getElementById('darkenPreview').textContent =
-            '相机设定：f/' + closest + ' · ' + shLabel + ' · ISO' + iso + '  (压暗 ' + darkenAmount + ' 档)';
-    }
-    function onDarkDistanceChange() {
-        darkDistanceIndex = parseInt(document.getElementById('darkDistanceSlider').value);
-        document.getElementById('darkDistanceTag').textContent = DISTANCE_VALUES[darkDistanceIndex] + 'm';
-        updateDarkWizardSteps(3);
-        clearResult();
-    }
-
-    // ==================== 其他 ====================
-    function setFineTune(key) { fineTuneKey = key; updateTuneButtons(); clearResult(); }
-    function updateTuneButtons() {
-        const ids = {'-0.7':'tuneNeg07Btn','-0.3':'tuneNeg03Btn','base':'tuneBaseBtn','0.3':'tunePos03Btn','0.7':'tunePos07Btn'};
-        Object.entries(ids).forEach(([k,id]) => { const b = document.getElementById(id); if (b) b.classList.toggle('active-tune', k === fineTuneKey); });
-    }
-    function setND(stops) { ndStops = stops; document.getElementById('ndDisplay').textContent = stops + '档'; updateNDButtons(); clearResult(); }
-    function updateNDButtons() {
-        [3,6,10].forEach(s => {
-            const b = document.getElementById('nd' + s + 'Btn');
-            if (b) { const a = s === ndStops; b.classList.toggle('active', a); b.style.background = a ? '#ffb800' : '#1a1a1a'; b.style.color = a ? '#000' : '#ccc'; b.style.borderColor = a ? '#ffb800' : '#333'; }
-        });
-    }
-    function updatePowerGrid() {
-        const g = document.getElementById('powerGrid'); g.innerHTML = '';
-        POWER_STEPS.forEach((p,i) => {
-            const b = document.createElement('button');
-            b.className = i === powerIndex ? 'active' : ''; b.textContent = p.label;
-            b.onclick = () => { powerIndex = i; updatePowerGrid(); clearResult(); };
-            g.appendChild(b);
-        });
-        document.getElementById('powerDisplay').textContent = POWER_STEPS[powerIndex].label;
-    }
-    function clearResult() {
-        document.getElementById('resultPlaceholder').classList.remove('hidden');
-        document.getElementById('resultContent').classList.add('hidden');
-    }
-
-    // ==================== 模式切换 ====================
-    function setMode(mode) {
-        currentMode = mode;
-        const map = {'exposure':'modeExpBtn','fill':'modeFillBtn','darkBg':'modeDarkBtn','nd':'modeNDBtn'};
-        Object.entries(map).forEach(([k,id]) => { const b = document.getElementById(id); if (b) b.classList.toggle('active', k === mode); });
-
-        const isFill = mode === 'fill', isDark = mode === 'darkBg', isWizard = isFill || isDark;
-        document.getElementById('subTabs').classList.toggle('hidden', isWizard);
-        document.getElementById('fillWizard').classList.toggle('hidden', !isFill);
-        document.getElementById('darkBgWizard').classList.toggle('hidden', !isDark);
-
-        document.getElementById('fillAmbientCard').classList.toggle('hidden', !isFill);
-        document.getElementById('fillEffectCard').classList.toggle('hidden', !isFill);
-        document.getElementById('fillFlashCard').classList.toggle('hidden', !isFill);
-
-        document.getElementById('darkAmbientCard').classList.toggle('hidden', !isDark);
-        document.getElementById('darkenAmountCard').classList.toggle('hidden', !isDark);
-        document.getElementById('darkFlashCard').classList.toggle('hidden', !isDark);
-
-        document.getElementById('ndSelectCard').classList.toggle('hidden', mode !== 'nd');
-        document.getElementById('hssCard').classList.remove('hidden');
-
-        updateCardVisibility();
-        updateApertureLabel();
-
-        if (isFill) {
-            updateFillAmbientDisplay();
-            updateFillPreview();
-            onFillDistanceChange();
-            updateFillWizardSteps(1);
-        }
-        if (isDark) {
-            updateDarkAmbientDisplay();
-            updateDarkenPreview();
-            onDarkDistanceChange();
-            updateDarkWizardSteps(1);
-        }
-
-        clearResult();
-    }
-
-    function setSubMode(sub) {
-        currentSubMode = sub;
-        document.getElementById('subApertureBtn').classList.toggle('active', sub === 'aperture');
-        document.getElementById('subPowerBtn').classList.toggle('active', sub === 'power');
-        document.getElementById('subDistanceBtn').classList.toggle('active', sub === 'distance');
-        updateCardVisibility();
-        updateApertureLabel();
-        clearResult();
-    }
-
-    function updateCardVisibility() {
-        const wiz = currentMode === 'fill' || currentMode === 'darkBg';
-        const needsShutter = !wiz && (currentSubMode === 'power' || currentSubMode === 'distance');
-        const needsAperture = !wiz && (currentSubMode === 'power' || currentSubMode === 'distance');
-        const needsDistance = !wiz && currentSubMode !== 'distance';
-        const needsPower = !wiz && currentSubMode !== 'power' && currentSubMode !== 'distance';
-        document.getElementById('shutterCard').classList.toggle('hidden', !needsShutter);
-        document.getElementById('apertureCard').classList.toggle('hidden', !needsAperture);
-        document.getElementById('distanceCard').classList.toggle('hidden', !needsDistance);
-        document.getElementById('powerCard').classList.toggle('hidden', !needsPower);
-    }
-
-    function updateApertureLabel() {
-        const l = document.getElementById('apertureLabel');
-        l.textContent = (currentSubMode === 'aperture') ? '目标光圈（计算结果）' : '光圈';
-    }
-
-    // ==================== 核心计算 ====================
-    function calculate() {
-        const ph = document.getElementById('resultPlaceholder');
-        const ct = document.getElementById('resultContent');
-        ph.classList.add('hidden'); ct.classList.remove('hidden');
-        let html = '';
-
-        if (currentMode === 'fill') {
-            html = calculateFill();
-        } else if (currentMode === 'darkBg') {
-            html = calculateDarkBg();
-        } else {
-            html = calculateStandard();
-        }
-        ct.innerHTML = html;
-    }
-
-    function calculateStandard() {
-        const effGN = getEffectiveGN();
-        const dist = getDistance();
-        const ndFactor = getNDFactor();
-        let html = '';
-
-        const shSec = getShutterSec();
-        const maxSync = getMaxSyncShutter();
-        if (shSec < maxSync && !hssEnabled) {
-            html += `<div class="result-row"><span style="color:#ff5252;">⚠️</span><span class="val warning">快门超过同步速度！开启HSS或将快门降至1/${Math.round(1/maxSync)}以内</span></div>`;
-        }
-
-        if (currentMode === 'exposure') {
-            if (currentSubMode === 'aperture') {
-                const ap = effGN / dist;
-                html += renderApertureResult(effGN, ap, dist);
-            } else if (currentSubMode === 'power') {
-                const ap = getAperture();
-                const re = ap * dist;
-                const rp = Math.pow(re / (gnValue * Math.sqrt(getISO()/100)), 2);
-                html += renderPowerResult(re, rp, ap, dist);
-            } else {
-                const ap = getAperture();
-                html += renderDistanceResult(effGN, effGN/ap, ap);
-            }
-        } else if (currentMode === 'nd') {
-            if (currentSubMode === 'aperture') {
-                const ap = (effGN/dist) / Math.sqrt(ndFactor);
-                html += `<div class="result-row"><span>ND系数</span><span class="val">${ndFactor}x (${ndStops}档)</span></div>`;
-                html += renderApertureResult(effGN, ap, dist);
-            } else if (currentSubMode === 'power') {
-                const ap = getAperture();
-                const re = ap * dist * Math.sqrt(ndFactor);
-                const rp = Math.pow(re / (gnValue * Math.sqrt(getISO()/100)), 2);
-                html += `<div class="result-row"><span>ND系数</span><span class="val">${ndFactor}x (${ndStops}档)</span></div>`;
-                html += renderPowerResult(re, rp, ap, dist);
-            } else {
-                const ap = getAperture();
-                const rd = effGN / (ap * Math.sqrt(ndFactor));
-                html += `<div class="result-row"><span>ND系数</span><span class="val">${ndFactor}x (${ndStops}档)</span></div>`;
-                html += renderDistanceResult(effGN, rd, ap);
-            }
-        }
-        if (currentSubMode !== 'distance') html += renderExposureTable(effGN, dist, ndFactor);
-        return html;
-    }
-
-    function calculateFill() {
-        const ambientAp = APERTURE_VALUES[fillAmbientApertureIndex];
-        const ambientShSec = getShutterArr()[fillAmbientShutterIndex].sec;
-        const ambientShLabel = getShutterArr()[fillAmbientShutterIndex].label;
-        const iso = getISO();
-        const dist = DISTANCE_VALUES[fillDistanceIndex];
-        const effect = FILL_EFFECTS[fillEffectKey];
-
-        const ambientEV = calcEV(ambientAp, ambientShSec, iso);
-        const flashTargetEV = ambientEV + effect.evOffset;
-        const targetAp = Math.sqrt(Math.pow(2, flashTargetEV) * ambientShSec * (iso / 100));
-        const closestApIdx = findClosestApertureIndex(targetAp);
-        const actualAp = APERTURE_VALUES[closestApIdx];
-
-        const requiredEffGN = actualAp * dist;
-        const requiredPower = Math.pow(requiredEffGN / (gnValue * Math.sqrt(iso/100)), 2);
-        const pd = powerToDisplay(requiredPower);
-
-        let html = '';
-        html += `<div class="result-section fill-section"><h4>📸 步骤1：环境光测光</h4>`;
-        html += `<div class="result-row"><span>环境光曝光</span><span class="val">f/${ambientAp} · ${ambientShLabel} · ISO${iso}</span></div>`;
-        html += `<div class="result-row"><span>环境光 EV</span><span class="val">${ambientEV.toFixed(1)}</span></div></div>`;
-
-        html += `<div class="result-section fill-section"><h4>🎨 步骤2：填充效果</h4>`;
-        html += `<div class="result-row"><span>效果</span><span class="val fill">${effect.name}</span></div>`;
-        html += `<div class="result-row"><span>比例</span><span class="val">${effect.ratio}</span></div>`;
-        html += `<div class="result-row"><span>闪光比环境光</span><span class="val">${effect.evOffset >= 0 ? '+' : ''}${effect.evOffset} EV</span></div>`;
-        html += `<div class="result-row"><span>相机设定光圈</span><span class="val success">f/${actualAp}</span></div>`;
-        html += `<div class="result-row"><span>相机快门</span><span class="val">${ambientShLabel}</span></div></div>`;
-
-        html += `<div class="result-section fill-section"><h4>⚡ 步骤3：闪光灯设置</h4>`;
-        html += `<div class="result-row"><span>距离</span><span class="val">${dist}m</span></div>`;
-        html += `<div class="result-row"><span>建议功率</span><span class="val big">${pd.frac}</span></div>`;
-        if (pd.ev !== 'base') html += `<div class="result-row"><span>EV微调</span><span class="val">${pd.ev} EV</span></div>`;
-        html += `<div class="result-row"><span>功率百分比</span><span class="val">${pd.pct}</span></div></div>`;
-
-        if (requiredPower > 1.0) {
-            html += `<div class="result-row"><span style="color:#ff5252;">功率不足</span><span class="val warning">缩短距离或提高ISO</span></div>`;
-        }
-
-        html += `<div class="suggestion-box"><strong>💡 ${effect.name}技巧：</strong><br>• ${effect.desc}<br>• 相机用 f/${actualAp} · ${ambientShLabel} · ISO${iso}<br>• 闪光灯在 ${dist}m 处输出 ${pd.frac}（${pd.pct}）<br>• 先拍一张检查效果，再微调功率</div>`;
-
-        html += renderFillExposureTable(ambientAp, ambientShSec, ambientShLabel, iso, dist, actualAp);
-        return html;
-    }
-
-    function renderFillExposureTable(ambientAp, ambientShSec, ambientShLabel, iso, dist, targetAp) {
-        const apArr = APERTURE_VALUES.slice(0, 15);
-        const ambientEV = calcEV(ambientAp, ambientShSec, iso);
-        let t = '<div style="margin-top:16px;"><strong style="font-size:13px;color:#ff9800;">📋 不同功率的填充效果 (距离=' + dist + 'm)</strong>';
-        t += '<table class="exposure-table"><thead><tr><th>功率</th><th>闪光EV</th><th>比例</th><th>效果</th></tr></thead><tbody>';
-        POWER_STEPS.forEach(p => {
-            const effGN = gnValue * Math.sqrt(iso/100) * Math.sqrt(p.value);
-            const flashAp = effGN / dist;
-            const flashEV = calcEV(flashAp, ambientShSec, iso);
-            const diff = flashEV - ambientEV;
-            let ratio = '', effect = '';
-            if (diff < -1.5) { ratio = '1:4-'; effect = '极弱补光'; }
-            else if (diff < -0.5) { ratio = '1:2'; effect = '柔和补光'; }
-            else if (diff < 0.5) { ratio = '1:1'; effect = '均衡填充'; }
-            else if (diff < 1.5) { ratio = '2:1'; effect = '突出主体'; }
-            else { ratio = '4:1+'; effect = '强闪光'; }
-            const isTarget = Math.abs(p.value - POWER_STEPS[powerIndex].value) < 0.005 || (p.value === 1 && Math.abs(flashAp - targetAp) < 0.3);
-            t += `<tr class="${isTarget ? 'best-match' : ''}"><td>${p.label}</td><td>${flashEV.toFixed(1)}</td><td>${ratio}</td><td>${effect}</td></tr>`;
-        });
-        t += '</tbody></table></div>';
-        return t;
-    }
-
-    function calculateDarkBg() {
-        const ambientAp = APERTURE_VALUES[darkAmbientApertureIndex];
-        const ambientShSec = getShutterArr()[darkAmbientShutterIndex].sec;
-        const ambientShLabel = getShutterArr()[darkAmbientShutterIndex].label;
-        const iso = getISO();
-        const dist = DISTANCE_VALUES[darkDistanceIndex];
-
-        const ambientEV = calcEV(ambientAp, ambientShSec, iso);
-        const darkenedAp = getDarkenedAperture(ambientAp, ambientShSec, iso, darkenAmount);
-        const closestApIdx = findClosestApertureIndex(darkenedAp);
-        const actualAp = APERTURE_VALUES[closestApIdx];
-        const actualDarkenEV = ambientEV - calcEV(actualAp, ambientShSec, iso);
-
-        const requiredEffGN = actualAp * dist;
-        const requiredPower = Math.pow(requiredEffGN / (gnValue * Math.sqrt(iso/100)), 2);
-        const pd = powerToDisplay(requiredPower);
-
-        let html = '';
-        html += `<div class="result-section"><h4>📸 步骤1：环境光测光</h4>`;
-        html += `<div class="result-row"><span>环境光曝光</span><span class="val">f/${ambientAp} · ${ambientShLabel} · ISO${iso}</span></div>`;
-        html += `<div class="result-row"><span>环境光 EV</span><span class="val">${ambientEV.toFixed(1)}</span></div></div>`;
-
-        html += `<div class="result-section"><h4>🌑 步骤2：压暗设定</h4>`;
-        html += `<div class="result-row"><span>目标压暗</span><span class="val big">${darkenAmount} 档</span></div>`;
-        html += `<div class="result-row"><span>相机光圈</span><span class="val success">f/${actualAp}</span></div>`;
-        html += `<div class="result-row"><span>实际压暗</span><span class="val">${actualDarkenEV.toFixed(1)} EV</span></div>`;
-        html += `<div class="result-row"><span>相机快门</span><span class="val">${ambientShLabel}</span></div></div>`;
-
-        html += `<div class="result-section"><h4>⚡ 步骤3：闪光灯设置</h4>`;
-        html += `<div class="result-row"><span>距离</span><span class="val">${dist}m</span></div>`;
-        html += `<div class="result-row"><span>建议功率</span><span class="val big">${pd.frac}</span></div>`;
-        if (pd.ev !== 'base') html += `<div class="result-row"><span>EV微调</span><span class="val">${pd.ev} EV</span></div>`;
-        html += `<div class="result-row"><span>功率百分比</span><span class="val">${pd.pct}</span></div></div>`;
-
-        if (requiredPower > 1.0) {
-            html += `<div class="result-row"><span style="color:#ff5252;">功率不足</span><span class="val warning">缩短距离、提高ISO或减少压暗</span></div>`;
-        }
-
-        let effectDesc = actualDarkenEV >= 2.5 ? '背景强烈压暗，电影感强烈' : actualDarkenEV >= 1.5 ? '背景明显压暗，主体突出' : '背景轻微压暗，效果自然';
-        html += `<div class="suggestion-box"><strong>💡 压暗背景流程：</strong><br>1. 测光：f/${ambientAp} · ${ambientShLabel} · ISO${iso}<br>2. 缩小至 f/${actualAp}（压暗 ${actualDarkenEV.toFixed(1)} EV）<br>3. 闪光灯 ${dist}m → ${pd.frac}（${pd.pct}）<br><strong>效果：</strong>${effectDesc}</div>`;
-
-        html += renderDarkBgExposureTable(ambientAp, ambientShSec, ambientShLabel, iso, dist, actualAp);
-        return html;
-    }
-
-    function renderDarkBgExposureTable(ambientAp, ambientShSec, ambientShLabel, iso, dist, targetAp) {
-        const apArr = APERTURE_VALUES.slice(0, 15);
-        const ambientEV = calcEV(ambientAp, ambientShSec, iso);
-        let t = '<div style="margin-top:16px;"><strong style="font-size:13px;color:#ffb800;">📋 不同光圈所需功率 (距离=' + dist + 'm)</strong>';
-        t += '<table class="exposure-table"><thead><tr><th>光圈</th><th>压暗量</th><th>所需功率</th></tr></thead><tbody>';
-        apArr.forEach(ap => {
-            const re = ap * dist;
-            const rp = Math.pow(re / (gnValue * Math.sqrt(iso/100)), 2);
-            const pd = powerToDisplay(rp);
-            const de = ambientEV - calcEV(ap, ambientShSec, iso);
-            const isTarget = Math.abs(ap - targetAp) < 0.05;
-            t += `<tr class="${isTarget ? 'best-match' : ''}"><td>f/${ap}</td><td>${de > 0 ? de.toFixed(1) + ' EV' : '—'}</td><td>${pd.frac}${pd.ev !== 'base' ? ' ' + pd.ev : ''} (${pd.pct})</td></tr>`;
-        });
-        t += '</tbody></table></div>';
-        return t;
-    }
-
-    function renderApertureResult(effGN, requiredAp, dist) {
-        let h = '';
-        h += `<div class="result-row"><span>有效GN</span><span class="val">${effGN.toFixed(1)}</span></div>`;
-        h += `<div class="result-row"><span>距离</span><span class="val">${dist}m</span></div>`;
-        h += `<div class="result-row"><span>所需光圈</span><span class="val big">f/${requiredAp.toFixed(1)}</span></div>`;
-        const arr = getApertureArr();
-        let ca = arr[0], md = Infinity;
-        arr.forEach(a => { const d = Math.abs(a - requiredAp); if (d < md) { md = d; ca = a; } });
-        h += `<div class="result-row"><span>最接近光圈</span><span class="val success">f/${ca}</span></div>`;
-        if (requiredAp < arr[0]) h += `<div class="result-row"><span style="color:#ff5252;">⚠️</span><span class="val warning">光圈不够大！提高ISO或增加功率</span></div>`;
-        return h;
-    }
-
-    function renderPowerResult(requiredEffGN, requiredPower, ap, dist) {
-        const pd = powerToDisplay(requiredPower);
-        let h = '';
-        h += `<div class="result-row"><span>所需有效GN</span><span class="val">${requiredEffGN.toFixed(1)}</span></div>`;
-        h += `<div class="result-row"><span>f/${ap} · ${dist}m</span></div>`;
-        h += `<div class="result-row"><span>建议功率</span><span class="val big">${pd.frac}</span></div>`;
-        if (pd.ev !== 'base') h += `<div class="result-row"><span>EV微调</span><span class="val">${pd.ev} EV</span></div>`;
-        h += `<div class="result-row"><span>功率百分比</span><span class="val">${pd.pct}</span></div>`;
-        if (requiredPower > 1.0) h += `<div class="result-row"><span style="color:#ff5252;">功率不足</span><span class="val warning">开大光圈、提高ISO或缩短距离</span></div>`;
-        return h;
-    }
-
-    function renderDistanceResult(effGN, requiredDist, ap) {
-        let h = '';
-        h += `<div class="result-row"><span>有效GN</span><span class="val">${effGN.toFixed(1)}</span></div>`;
-        h += `<div class="result-row"><span>f/${ap}</span></div>`;
-        h += `<div class="result-row"><span>最大距离</span><span class="val big">${requiredDist.toFixed(1)}m</span></div>`;
-        if (requiredDist > getDistanceArr()[getDistanceArr().length-1]) h += `<div class="result-row"><span style="color:#ff5252;">距离不足</span><span class="val warning">超出最大距离</span></div>`;
-        return h;
-    }
-
-    function renderExposureTable(effGN, dist, ndFactor) {
-        const arr = getApertureArr().slice(0, 15);
-        let t = '<div style="margin-top:16px;"><strong style="font-size:13px;color:#ffb800;">📋 曝光组合参考 (距离=' + dist + 'm)</strong>';
-        t += '<table class="exposure-table"><thead><tr><th>光圈</th><th>所需功率</th><th>功率档位</th></tr></thead><tbody>';
-        const ca = getAperture();
-        arr.forEach(ap => {
-            const re = ap * dist * Math.sqrt(getNDFactor() > 1 ? getNDFactor() : 1);
-            const rp = Math.pow(re / (gnValue * Math.sqrt(getISO()/100)), 2);
-            const pd = powerToDisplay(rp);
-            t += `<tr class="${Math.abs(ap - ca) < 0.05 ? 'best-match' : ''}"><td>f/${ap}</td><td>${pd.pct}</td><td>${pd.frac}${pd.ev !== 'base' ? ' ' + pd.ev : ''}</td></tr>`;
-        });
-        t += '</tbody></table></div>';
-        return t;
-    }
-
-    // ==================== 初始化 ====================
-    function init() {
-        updatePowerGrid();
-        updateTuneButtons();
-        updateNDButtons();
-        updateFillAmbientDisplay();
-        updateFillPreview();
-        updateDarkAmbientDisplay();
-        updateDarkenPreview();
-        onFillDistanceChange();
-        onDarkDistanceChange();
-        updateFillWizardSteps(1);
-        updateDarkWizardSteps(1);
-        setHSS(false);
-        setMode('exposure');
-        setSubMode('aperture');
-        document.getElementById('gnInput').value = gnValue;
-    }
-    init();
 </script>
 </body>
 </html>
